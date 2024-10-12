@@ -5,6 +5,7 @@ import org.example.habit_trackingzhenya.models.Frequency;
 import org.example.habit_trackingzhenya.models.Habit;
 import org.example.habit_trackingzhenya.models.Role;
 import org.example.habit_trackingzhenya.models.User;
+import org.example.habit_trackingzhenya.repositories.HabitCompletionRepository;
 import org.example.habit_trackingzhenya.repositories.HabitRepository;
 import org.example.habit_trackingzhenya.services.Impl.HabitServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,12 +21,13 @@ import static org.mockito.Mockito.*;
 public class HabitServiceImplTest {
     private HabitServiceImpl habitService;
     private HabitRepository habitRepository;
+    private HabitCompletionRepository habitCompletionRepository;
     private User user;
 
     @BeforeEach
     public void setUp() {
         habitRepository = Mockito.mock(HabitRepository.class);
-        habitService = new HabitServiceImpl(habitRepository);
+        habitService = new HabitServiceImpl(habitRepository,habitCompletionRepository);
         user = new User("User", "user@example.com", "password", Role.USER);
     }
 

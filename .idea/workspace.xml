@@ -5,70 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="73d927e6-f1bc-4ab3-8d9e-eff3121fc453" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.mvn/wrapper/maven-wrapper.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.mvn/wrapper/maven-wrapper.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/README.MD" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mvnw" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mvnw.cmd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/module-info.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/HelloApplication.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/HelloController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/controller/AdminController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/controller/HabitController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/controller/UserController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/exception/AdminException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/exception/BlockedUserException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/exception/DeleteException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/exception/EditException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/exception/EmailException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/exception/HabitException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/exception/InputInvalidException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/exception/MarkHabitException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/exception/RegistrationException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/exception/SecurityException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/exception/UpdateException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/models/Frequency.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/models/Habit.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/models/HabitCompletion.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/models/Notification.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/models/Role.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/models/User.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/repositories/HabitCompletionRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/repositories/HabitRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/repositories/NotificationRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/repositories/UserRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/services/AdminServices.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/services/HabitCompletionService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/services/HabitService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/services/Impl/AdminServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/services/Impl/HabitCompletionServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/services/Impl/HabitServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/services/Impl/NotificationServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/services/Impl/UserServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/services/NotificationService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/services/UserService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/utils/InputReader.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/utils/Utils.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/org/example/habit_trackingzhenya/hello-view.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/org/example/habit_trackingzhenya/controller/AdminControllerTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/org/example/habit_trackingzhenya/controller/HabitControllerTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/org/example/habit_trackingzhenya/controller/UserControllerTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/org/example/habit_trackingzhenya/repository/HabitCompletionRepositoryTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/org/example/habit_trackingzhenya/repository/HabitRepositoryTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/org/example/habit_trackingzhenya/repository/NotificationRepositoryTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/org/example/habit_trackingzhenya/repository/UserRepositoryTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/org/example/habit_trackingzhenya/services/AdminServiceImplTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/org/example/habit_trackingzhenya/services/HabitCompletionServiceImplTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/org/example/habit_trackingzhenya/services/HabitServiceImplTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/org/example/habit_trackingzhenya/services/NotoficationServiceImplTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/org/example/habit_trackingzhenya/services/UserServiceImplTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/org/example/habit_trackingzhenya/services/HabitServiceImplTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/example/habit_trackingzhenya/services/HabitServiceImplTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -109,37 +46,37 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.HelloApplication.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.AdminControllerTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.AdminServiceImplTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.HabitCompletionRepositoryTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.HabitCompletionServiceImplTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.HabitControllerTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.HabitRepositoryTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.HabitServiceImplTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.NotificationRepositoryTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.NotificationRepositoryTest.testNotificationConstructorWithoutHabit.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.NotoficationServiceImplTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.UserControllerTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.UserControllerTest.testRegisterUser_Success.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.UserControllerTest.testUpdatePassword_Success.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.UserRepositoryTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.UserServiceImplTest.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.HelloApplication.executor": "Run",
+    "JUnit.AdminControllerTest.executor": "Run",
+    "JUnit.AdminServiceImplTest.executor": "Run",
+    "JUnit.HabitCompletionRepositoryTest.executor": "Run",
+    "JUnit.HabitCompletionServiceImplTest.executor": "Run",
+    "JUnit.HabitControllerTest.executor": "Run",
+    "JUnit.HabitRepositoryTest.executor": "Run",
+    "JUnit.HabitServiceImplTest.executor": "Run",
+    "JUnit.NotificationRepositoryTest.executor": "Run",
+    "JUnit.NotificationRepositoryTest.testNotificationConstructorWithoutHabit.executor": "Run",
+    "JUnit.NotoficationServiceImplTest.executor": "Run",
+    "JUnit.UserControllerTest.executor": "Run",
+    "JUnit.UserControllerTest.testRegisterUser_Success.executor": "Run",
+    "JUnit.UserControllerTest.testUpdatePassword_Success.executor": "Run",
+    "JUnit.UserRepositoryTest.executor": "Run",
+    "JUnit.UserServiceImplTest.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "#1 on master",
+    "kotlin-language-version-configured": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
-  <component name="RunManager" selected="Application.HelloApplication">
+}]]></component>
+  <component name="RunManager" selected="JUnit.HabitServiceImplTest">
     <configuration name="HelloApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="org.example.habit_trackingzhenya.HelloApplication" />
       <module name="Habit_Tracking_Homework_1" />
@@ -149,21 +86,6 @@
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="AdminControllerTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="Habit_Tracking_Homework_1" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.example.habit_trackingzhenya.controller.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="org.example.habit_trackingzhenya.controller" />
-      <option name="MAIN_CLASS_NAME" value="org.example.habit_trackingzhenya.controller.AdminControllerTest" />
-      <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -178,6 +100,21 @@
       </extension>
       <option name="PACKAGE_NAME" value="org.example.habit_trackingzhenya.controller" />
       <option name="MAIN_CLASS_NAME" value="org.example.habit_trackingzhenya.controller.HabitControllerTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="HabitServiceImplTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="Habit_Tracking_Homework_1" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.example.habit_trackingzhenya.services.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.example.habit_trackingzhenya.services" />
+      <option name="MAIN_CLASS_NAME" value="org.example.habit_trackingzhenya.services.HabitServiceImplTest" />
       <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -198,18 +135,17 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="UserControllerTest.testRegisterUser_Success" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="UserServiceImplTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="Habit_Tracking_Homework_1" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="org.example.habit_trackingzhenya.controller.*" />
+          <option name="PATTERN" value="org.example.habit_trackingzhenya.services.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="org.example.habit_trackingzhenya.controller" />
-      <option name="MAIN_CLASS_NAME" value="org.example.habit_trackingzhenya.controller.UserControllerTest" />
-      <option name="METHOD_NAME" value="testRegisterUser_Success" />
-      <option name="TEST_OBJECT" value="method" />
+      <option name="PACKAGE_NAME" value="org.example.habit_trackingzhenya.services" />
+      <option name="MAIN_CLASS_NAME" value="org.example.habit_trackingzhenya.services.UserServiceImplTest" />
+      <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -229,11 +165,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.HabitServiceImplTest" />
+        <item itemvalue="JUnit.UserServiceImplTest" />
         <item itemvalue="Application.HelloApplication" />
         <item itemvalue="JUnit.HabitControllerTest" />
         <item itemvalue="JUnit.UserControllerTest" />
-        <item itemvalue="JUnit.AdminControllerTest" />
-        <item itemvalue="JUnit.UserControllerTest.testRegisterUser_Success" />
       </list>
     </recent_temporary>
   </component>

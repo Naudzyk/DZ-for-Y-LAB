@@ -10,9 +10,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -25,104 +27,207 @@ public class UserServiceImplTest {
 
     private User user;
 
-    @BeforeEach
-    public void setUp() {
-        userRepository = Mockito.mock(UserRepository.class);
-        user = new User("Zhenya","zhenya@mail.ru","password", Role.USER);
-
+@BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    void testaddUser() {
+    void testAddUser_Success() {
+        User user = new User("John Doe", "john.doe@example.com", "password", Role.USER, false);
         when(userRepository.existsByEmail(user.getEmail())).thenReturn(false);
+
         boolean result = userService.addUser(user);
-        assertThat(result).isTrue();
-        verify(userRepository, times(1)).addUser(user);
 
+        assertTrue(result);
+        verify(userRepository).addUser(user);
     }
 
     @Test
-    void testaddUser_False() {
+    void testAddUser_EmailExists() {
+        User user = new User("John Doe", "john.doe@example.com", "password", Role.USER, false);
         when(userRepository.existsByEmail(user.getEmail())).thenReturn(true);
-        boolean result =  userService.addUser(user);
-        assertThat(result).isFalse();
-        verify(userRepository,never()).addUser(user);
+
+        boolean result = userService.addUser(user);
+
+        assertFalse(result);
+        verify(userRepository, never()).addUser(user);
     }
+
     @Test
-    void testLogin() {
-        when(userRepository.getUserByEmail(user.getEmail())).thenReturn(user);
-        User loggedInUser = userService.login(user.getEmail(), user.getPassword());
-        assertThat(loggedInUser).isEqualTo(user);
+    void testUpdateEmail_Success() {
+        String oldEmail = "john.doe@example.com";
+        String newEmail = "jane.doe@example.com";
+        when(userRepository.existsByEmail(newEmail)).thenReturn(false);
+
+        boolean result = userService.updateEmail(oldEmail, newEmail);
+
+        assertTrue(result);
+        verify(userRepository).updateEmail(oldEmail, newEmail);
+    }
+
+    @Test
+    void testUpdateEmail_EmailExists() {
+        String oldEmail = "john.doe@example.com";
+        String newEmail = "jane.doe@example.com";
+        when(userRepository.existsByEmail(newEmail)).thenReturn(true);
+
+        boolean result = userService.updateEmail(oldEmail, newEmail);
+
+        assertFalse(result);
+        verify(userRepository, never()).updateEmail(oldEmail, newEmail);
+    }
+
+    @Test
+    void testUpdateName_Success() {
+        String email = "john.doe@example.com";
+        String newName = "Jane Doe";
+        User user = new User("John Doe", email, "password", Role.USER, false);
+        when(userRepository.findByEmail(email)).thenReturn(user);
+
+        boolean result = userService.updateName(email, newName);
+
+        assertTrue(result);
+        assertEquals(newName, user.getName());
+    }
+
+    @Test
+    void testUpdateName_UserNotFound() {
+        String email = "john.doe@example.com";
+        String newName = "Jane Doe";
+        when(userRepository.findByEmail(email)).thenReturn(null);
+
+        boolean result = userService.updateName(email, newName);
+
+        assertFalse(result);
+    }
+
+    @Test
+    void testUpdatePassword_Success() {
+        String email = "john.doe@example.com";
+        String oldPassword = "password";
+        String newPassword = "newpassword";
+        User user = new User("John Doe", email, oldPassword, Role.USER, false);
+        when(userRepository.findByEmail(email)).thenReturn(user);
+
+        boolean result = userService.updatePassword(email, newPassword, oldPassword);
+
+        assertTrue(result);
+        assertEquals(newPassword, user.getPassword());
+    }
+
+    @Test
+    void testUpdatePassword_WrongOldPassword() {
+        String email = "john.doe@example.com";
+        String oldPassword = "wrongpassword";
+        String newPassword = "newpassword";
+        User user = new User("John Doe", email, "password", Role.USER, false);
+        when(userRepository.findByEmail(email)).thenReturn(user);
+
+        boolean result = userService.updatePassword(email, newPassword, oldPassword);
+
+        assertFalse(result);
+        assertNotEquals(newPassword, user.getPassword());
+    }
+
+    @Test
+    void testUpdatePassword_UserNotFound() {
+        String email = "john.doe@example.com";
+        String oldPassword = "password";
+        String newPassword = "newpassword";
+        when(userRepository.findByEmail(email)).thenReturn(null);
+
+        boolean result = userService.updatePassword(email, newPassword, oldPassword);
+
+        assertFalse(result);
+    }
+
+    @Test
+    void testLogin_Success() {
+        String email = "john.doe@example.com";
+        String password = "password";
+        User user = new User("John Doe", email, password, Role.USER, false);
+        when(userRepository.getUserByEmail(email)).thenReturn(user);
+
+        User result = userService.login(email, password);
+
+        assertNotNull(result);
+        assertEquals(user, result);
+    }
+
+    @Test
+    void testLogin_WrongPassword() {
+        String email = "john.doe@example.com";
+        String password = "wrongpassword";
+        User user = new User("John Doe", email, "password", Role.USER, false);
+        when(userRepository.getUserByEmail(email)).thenReturn(user);
+
+        User result = userService.login(email, password);
+
+        assertNull(result);
     }
 
     @Test
     void testLogin_UserNotFound() {
-        when(userRepository.getUserByEmail(user.getEmail())).thenReturn(null);
-        User loggedInUser = userService.login(user.getEmail(), user.getPassword());
-        assertThat(loggedInUser).isNull();
+        String email = "john.doe@example.com";
+        String password = "password";
+        when(userRepository.getUserByEmail(email)).thenReturn(null);
+
+        User result = userService.login(email, password);
+
+        assertNull(result);
     }
 
     @Test
-    void testLogin_IncorrectPassword() {
-        when(userRepository.getUserByEmail(user.getEmail())).thenReturn(user);
-        User loggedInUser = userService.login(user.getEmail(), "wrongPassword");
-        assertThat(loggedInUser).isNull();
+    void testDeleteUser_Success() {
+        String email = "john.doe@example.com";
+        String password = "password";
+        User user = new User("John Doe", email, password, Role.USER, false);
+        when(userRepository.getUserByEmail(email)).thenReturn(user);
+        when(userRepository.existsByEmail(email)).thenReturn(true);
+
+        boolean result = userService.deleteUser(email, password);
+
+        assertTrue(result);
+        verify(userRepository).deleteUser(email);
     }
 
     @Test
-    void testUpdateEmail() {
-        when(userRepository.existsByEmail("new@example.com")).thenReturn(false);
-        boolean result = userService.updateEmail(user.getEmail(), "new@example.com");
-        assertThat(result).isTrue();
-        verify(userRepository, times(1)).updateEmail(user.getEmail(), "new@example.com");
+    void testDeleteUser_WrongPassword() {
+        String email = "john.doe@example.com";
+        String password = "wrongpassword";
+        User user = new User("John Doe", email, "password", Role.USER, false);
+        when(userRepository.getUserByEmail(email)).thenReturn(user);
+
+        boolean result = userService.deleteUser(email, password);
+
+        assertFalse(result);
+        verify(userRepository, never()).deleteUser(email);
     }
 
     @Test
-    void testUpdateEmail_EmailAlreadyExists() {
-        when(userRepository.existsByEmail("new@example.com")).thenReturn(true);
-        boolean result = userService.updateEmail(user.getEmail(), "new@example.com");
-        assertThat(result).isFalse();
-        verify(userRepository, never()).updateEmail(user.getEmail(), "new@example.com");
-    }
+    void testDeleteUser_UserNotFound() {
+        String email = "john.doe@example.com";
+        String password = "password";
+        when(userRepository.getUserByEmail(email)).thenReturn(null);
 
-    @Test
-    void testUpdateName() {
-        boolean result = userService.updateName(user.getEmail(), "New Name");
-        assertThat(result).isTrue();
-        verify(userRepository, times(1)).updateName(user.getEmail(), "New Name");
-    }
+        boolean result = userService.deleteUser(email, password);
 
-    @Test
-    void testUpdatePassword() {
-        boolean result = userService.updatePassword(user.getEmail(), "newPassword", user.getPassword());
-        assertThat(result).isTrue();
-        verify(userRepository, times(1)).updatePassword(user.getEmail(), "newPassword");
-    }
-
-    @Test
-    void testUpdatePassword_IncorrectOldPassword() {
-        boolean result = userService.updatePassword(user.getEmail(), "newPassword", "wrongPassword");
-        assertThat(result).isFalse();
-        verify(userRepository, never()).updatePassword(user.getEmail(), "newPassword");
+        assertFalse(result);
+        verify(userRepository, never()).deleteUser(email);
     }
 
 
     @Test
-    void testDeleteUser() {
-        when(userRepository.getUserByEmail(user.getEmail())).thenReturn(user);
-        boolean result = userService.deleteUser(user.getEmail(), user.getPassword());
-        assertThat(result).isTrue();
-        verify(userRepository, times(1)).deleteUser(user.getEmail());
-    }
+    void testResetPassword_UserNotFound() {
+        String email = "john.doe@example.com";
+        String newPassword = "newpassword";
+        when(userRepository.getUserByEmail(email)).thenReturn(null);
 
-    @Test
-    void testDeleteUser_IncorrectPassword() {
-        when(userRepository.getUserByEmail(user.getEmail())).thenReturn(user);
-        boolean result = userService.deleteUser(user.getEmail(), "wrongPassword");
-        assertThat(result).isFalse();
-        verify(userRepository, never()).deleteUser(user.getEmail());
-    }
+        boolean result = userService.resetPassword(email, newPassword);
 
+        assertFalse(result);
+    }
 
 
 }
