@@ -43,12 +43,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean updatePassword(String email, String newPassword, String oldPassword) {
         User user = userRepository.findByEmail(email);
-        if (user.getPassword().equals(oldPassword)) {
-            if (user != null) {
+        if (user != null &&user.getPassword().equals(oldPassword)) {
                 user.setPassword(newPassword);
                 return true;
-            }
-            return false;
         }
         return false;
     }
