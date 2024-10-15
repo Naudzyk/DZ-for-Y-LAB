@@ -2,6 +2,7 @@ package org.example.habit_trackingzhenya.repository;
 
 import org.example.habit_trackingzhenya.models.Role;
 import org.example.habit_trackingzhenya.models.User;
+import org.example.habit_trackingzhenya.repositories.Impl.UserRepositoryImpl;
 import org.example.habit_trackingzhenya.repositories.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,7 +17,7 @@ public class UserRepositoryTest {
 
     @BeforeEach
     public void setUp() {
-        userRepository = new UserRepository();
+        userRepository = new UserRepositoryImpl();
     }
 
     @Test

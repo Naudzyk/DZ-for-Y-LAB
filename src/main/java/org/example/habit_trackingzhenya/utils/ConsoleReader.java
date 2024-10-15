@@ -2,7 +2,7 @@ package org.example.habit_trackingzhenya.utils;
 
 import java.util.Scanner;
 
-public class Utils implements InputReader {
+public class ConsoleReader implements ConsoleInputReader {
     private static final Scanner scanner = new Scanner(System.in);
 
     @Override

@@ -16,4 +16,6 @@ public interface HabitService {
 
     boolean deleteHabit(Habit habit);
     List<Habit> getFilteredHabits(User user, LocalDate startDate, LocalDate endDate, Boolean completed);
+
+    List<Habit > getAllHabits();
 }

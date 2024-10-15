@@ -4,31 +4,31 @@ import lombok.RequiredArgsConstructor;
 import org.example.habit_trackingzhenya.exception.*;
 import org.example.habit_trackingzhenya.models.Role;
 import org.example.habit_trackingzhenya.models.User;
-import org.example.habit_trackingzhenya.repositories.UserRepository;
 import org.example.habit_trackingzhenya.services.Impl.UserServiceImpl;
 import org.example.habit_trackingzhenya.services.UserService;
-import org.example.habit_trackingzhenya.utils.InputReader;
-import org.example.habit_trackingzhenya.utils.Utils;
+import org.example.habit_trackingzhenya.utils.ConsoleInputReader;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @RequiredArgsConstructor
 public class UserController {
     private UserService userService;
-    private InputReader inputReader;
-    private UserRepository userRepository;
+    private ConsoleInputReader consoleInputReader;
+    private final Logger logger = Logger.getLogger(this.getClass().getName());
 
-    public UserController(UserServiceImpl userService,InputReader inputReader) {
+    public UserController(UserServiceImpl userService,ConsoleInputReader consoleinputReader) {
         this.userService = userService;
-        this.inputReader = inputReader;
+        this.consoleInputReader = consoleinputReader;
     }
-
 
 
     public void registerUser() {
         try {
-            String name = inputReader.read("Введите ваше имя: ");
-            String email = inputReader.read("Введите ваш email: ");
-            String password = inputReader.read("Введите ваш пароль: ");
-            String roleStr = inputReader.read("Введите роль (USER/ADMIN): ");
+            String name = consoleInputReader.read("Введите ваше имя: ");
+            String email = consoleInputReader.read("Введите ваш email: ");
+            String password = consoleInputReader.read("Введите ваш пароль: ");
+            String roleStr = consoleInputReader.read("Введите роль (USER/ADMIN): ");
             Role role = Role.valueOf(roleStr.toUpperCase());
 
             User user = new User(name, email, password, role);
@@ -39,16 +39,21 @@ public class UserController {
                 throw new RegistrationException("Пользователь с таким email уже существует.");
             }
         } catch (RegistrationException e) {
+            logger.log(Level.WARNING, "Ошибка регистрации: " + e.getMessage(), e);
             System.out.println(e.getMessage());
+        } catch (IllegalArgumentException e) {
+            logger.log(Level.WARNING, "Ошибка ввода роли: " + e.getMessage(), e);
+            System.out.println("Неверная роль. Допустимые значения: USER, ADMIN.");
         } catch (Exception e) {
+            logger.log(Level.SEVERE, "Непредвиденная ошибка: " + e.getMessage(), e);
             System.out.println("Ошибка");
         }
     }
 
     public User loginUser() {
         try {
-            String email = inputReader.read("Введите ваш Email: ");
-            String password = inputReader.read("Введите ваш Password: ");
+            String email = consoleInputReader.read("Введите ваш Email: ");
+            String password = consoleInputReader.read("Введите ваш Password: ");
 
             User user = userService.login(email, password);
 
@@ -60,8 +65,10 @@ public class UserController {
             }
 
         } catch (InputInvalidException e) {
+            logger.log(Level.WARNING, "Ошибка входа: " + e.getMessage(), e);
             System.out.println(e.getMessage());
         } catch (Exception e) {
+            logger.log(Level.SEVERE, "Непредвиденная ошибка: " + e.getMessage(), e);
             System.out.println("Ошибка");
         }
         return null;
@@ -72,11 +79,11 @@ public class UserController {
         System.out.println("1. Редактировать Email");
         System.out.println("2. Редактировать Имя");
         System.out.println("3. Редактировать Пароль");
-        int choice = Integer.parseInt(inputReader.read("Введите ваш выбор: "));
+        int choice = Integer.parseInt(consoleInputReader.read("Введите ваш выбор: "));
         try {
             switch (choice) {
                 case 1:
-                    String newEmail = inputReader.read("Введите новый Email: ");
+                    String newEmail = consoleInputReader.read("Введите новый Email: ");
                     if (userService.updateEmail(email, newEmail)) {
                         System.out.println("Ваш новый Email: " + newEmail);
                     } else {
@@ -84,7 +91,7 @@ public class UserController {
                     }
                     break;
                 case 2:
-                    String newName = inputReader.read("Введите новое Имя: ");
+                    String newName = consoleInputReader.read("Введите новое Имя: ");
                     if (userService.updateName(email, newName)) {
                         System.out.println("Ваше новое Имя: " + newName);
                     } else {
@@ -92,8 +99,8 @@ public class UserController {
                     }
                     break;
                 case 3:
-                    String oldPassword = inputReader.read("Введите старый Пароль: ");
-                    String newPassword = inputReader.read("Введите новый Пароль: ");
+                    String oldPassword = consoleInputReader.read("Введите старый Пароль: ");
+                    String newPassword = consoleInputReader.read("Введите новый Пароль: ");
 
                     if (userService.updatePassword(email, newPassword, oldPassword)) {
                         System.out.println("Пароль обновлен");
@@ -106,15 +113,17 @@ public class UserController {
                     break;
             }
         } catch (EditException e) {
+            logger.log(Level.WARNING, "Ошибка редактирования профиля: " + e.getMessage(), e);
             System.out.println(e.getMessage());
         } catch (Exception e) {
+            logger.log(Level.SEVERE, "Непредвиденная ошибка: " + e.getMessage(), e);
             System.out.println("Ошибка!");
         }
     }
 
     public void resetPassword(String email) {
         try {
-            String newPassword = inputReader.read("Введите новый пароль: ");
+            String newPassword = consoleInputReader.read("Введите новый пароль: ");
 
             if (userService.resetPassword(email, newPassword)) {
                 System.out.println("Пароль успешно сброшен!");
@@ -123,15 +132,17 @@ public class UserController {
             }
 
         } catch (UpdateException e) {
+            logger.log(Level.WARNING, "Ошибка сброса пароля: " + e.getMessage(), e);
             System.out.println(e.getMessage());
         } catch (Exception e) {
+            logger.log(Level.SEVERE, "Непредвиденная ошибка: " + e.getMessage(), e);
             System.out.println("Ошибка");
         }
     }
 
     public void deleteUser(String email) {
         try {
-            String password = inputReader.read("Введите пароль: ");
+            String password = consoleInputReader.read("Введите пароль: ");
 
             if (userService.deleteUser(email, password)) {
                 System.out.println("Аккаунт удалён");
@@ -140,8 +151,10 @@ public class UserController {
             }
 
         } catch (DeleteException e) {
+            logger.log(Level.WARNING, "Ошибка удаления пользователя: " + e.getMessage(), e);
             System.out.println(e.getMessage());
         } catch (Exception e) {
+            logger.log(Level.SEVERE, "Непредвиденная ошибка: " + e.getMessage(), e);
             System.out.println("Ошибка");
         }
     }

@@ -2,6 +2,7 @@ package org.example.habit_trackingzhenya.repository;
 
 import org.example.habit_trackingzhenya.models.*;
 import org.example.habit_trackingzhenya.repositories.HabitCompletionRepository;
+import org.example.habit_trackingzhenya.repositories.Impl.HabitCompletionRepositoryImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -19,7 +20,7 @@ public class HabitRepositoryTest {
     @BeforeEach
     public void setUp() {
         user1 = new User("Zhenya","zhenya@mail.ru","password", Role.USER);
-        habitCompletionRepository = new HabitCompletionRepository();
+        habitCompletionRepository = new HabitCompletionRepositoryImpl();
         habit1 = new Habit("Habit1", "Description1", Frequency.DAILY,user1);
         habit2 = new Habit("Habit2", "Description2", Frequency.WEEKLY,user1);
     }

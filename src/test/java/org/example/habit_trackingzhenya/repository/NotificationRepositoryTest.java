@@ -1,6 +1,7 @@
 package org.example.habit_trackingzhenya.repository;
 
 import org.example.habit_trackingzhenya.models.*;
+import org.example.habit_trackingzhenya.repositories.Impl.NotificationRepositoryImpl;
 import org.example.habit_trackingzhenya.repositories.NotificationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,7 +21,7 @@ public class NotificationRepositoryTest {
 
     @BeforeEach
     public void setUp() {
-        notificationRepository = new NotificationRepository();
+        notificationRepository = new NotificationRepositoryImpl();
         user1 = new User("User1", "user1@example.com", "password", Role.USER);
         user2 = new User("User2", "user2@example.com", "password", Role.USER);
         habit1 = new Habit("Habit1", "Description1", Frequency.DAILY,user1);

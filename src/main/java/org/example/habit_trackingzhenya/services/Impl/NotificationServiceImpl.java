@@ -21,7 +21,7 @@ public class NotificationServiceImpl implements NotificationService {
     public void sendNotification(User user, Habit habit, String message) {
         Notification notification = new Notification(user, habit, message, LocalDateTime.now());
         notificationRepository.add(notification);
-        // Здесь можно добавить логику для отправки уведомления через внешний сервис
+        // TODO: Здесь можно добавить логику для отправки уведомления через внешний сервис
         System.out.println("Уведомление отправлено: " + message);
     }
 }

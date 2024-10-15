@@ -8,18 +8,20 @@ import org.example.habit_trackingzhenya.models.User;
 import org.example.habit_trackingzhenya.repositories.HabitRepository;
 import org.example.habit_trackingzhenya.repositories.UserRepository;
 import org.example.habit_trackingzhenya.services.AdminServices;
+import org.example.habit_trackingzhenya.services.HabitService;
+import org.example.habit_trackingzhenya.services.UserService;
 
 import java.util.ArrayList;
 import java.util.List;
 @RequiredArgsConstructor
 public class AdminServiceImpl implements AdminServices {
 
-    private UserRepository userRepository;
-    private HabitRepository habitRepository;
+    private UserService userService;
+    private HabitService habitService;
 
-    public AdminServiceImpl(UserRepository userRepository, HabitRepository habitRepository) {
-        this.userRepository = userRepository;
-        this.habitRepository = habitRepository;
+    public AdminServiceImpl(HabitService habitService, UserService userService) {
+        this.habitService = habitService;
+        this.userService = userService;
     }
 
     public boolean isAdmin(User user) {
@@ -28,41 +30,26 @@ public class AdminServiceImpl implements AdminServices {
 
     @Override
     public List<User> getAllUsers() {
-        return userRepository.getAllUsers();
+        return userService.getAllUsers();
     }
 
     @Override
     public List<Habit> getAllHabits() {
-        return new ArrayList<>(habitRepository.getAllHabits());
+        return habitService.getAllHabits();
     }
 
     @Override
     public boolean blockUser(String email) {
-        User user = userRepository.findByEmail(email);
-        if (user != null && user.getRole() != Role.ADMIN) {
-            user.setBlocked(true);
-            return true;
-        }
-        return false;
+        return userService.blockUser(email);
     }
 
     @Override
     public boolean unblockUser(String email) {
-        User user = userRepository.findByEmail(email);
-        if (user != null) {
-            user.setBlocked(false);
-            return true;
-        }
-        return false;
+        return userService.unblockUser(email);
     }
 
     @Override
     public boolean deleteUser(String email) {
-        User user = userRepository.findByEmail(email);
-        if (user != null) {
-            userRepository.deleteUser(email);
-            return true;
-        }
-        return false;
+        return userService.deleteUserForAdmin(email);
     }
 }

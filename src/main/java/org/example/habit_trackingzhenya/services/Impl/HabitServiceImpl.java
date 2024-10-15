@@ -68,6 +68,12 @@ public class HabitServiceImpl implements HabitService {
                 .filter(habit -> completed == null || isHabitCompleted(habit,LocalDate.now()) == completed)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public List<Habit> getAllHabits() {
+        return habitRepository.getAllHabits();
+    }
+
     private boolean isHabitCompleted(Habit habit, LocalDate date) {
         return habitCompletionRepository.getCompletionsForHabit(habit).stream()
                 .anyMatch(completion -> completion.getCompletionDate().equals(date));

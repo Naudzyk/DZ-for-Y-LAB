@@ -1,6 +1,5 @@
 package org.example.habit_trackingzhenya;
 
-import lombok.RequiredArgsConstructor;
 import org.example.habit_trackingzhenya.controller.AdminController;
 import org.example.habit_trackingzhenya.controller.HabitController;
 import org.example.habit_trackingzhenya.controller.UserController;
@@ -8,35 +7,39 @@ import org.example.habit_trackingzhenya.models.Role;
 import org.example.habit_trackingzhenya.models.User;
 import org.example.habit_trackingzhenya.repositories.HabitCompletionRepository;
 import org.example.habit_trackingzhenya.repositories.HabitRepository;
+import org.example.habit_trackingzhenya.repositories.Impl.HabitCompletionRepositoryImpl;
+import org.example.habit_trackingzhenya.repositories.Impl.HabitRepositoryImpl;
+import org.example.habit_trackingzhenya.repositories.Impl.NotificationRepositoryImpl;
+import org.example.habit_trackingzhenya.repositories.Impl.UserRepositoryImpl;
 import org.example.habit_trackingzhenya.repositories.NotificationRepository;
 import org.example.habit_trackingzhenya.repositories.UserRepository;
 import org.example.habit_trackingzhenya.services.Impl.*;
-import org.example.habit_trackingzhenya.utils.InputReader;
-import org.example.habit_trackingzhenya.utils.Utils;
+import org.example.habit_trackingzhenya.utils.ConsoleInputReader;
+import org.example.habit_trackingzhenya.utils.ConsoleReader;
 public class HelloApplication {
     private UserController userController;
     private HabitController habitController;
     private AdminController adminController;
     private User currentUser;
-    private InputReader inputReader;
+    private ConsoleInputReader consoleinputReader;
 
     public HelloApplication() {
-        UserRepository userRepository = new UserRepository();
-        HabitRepository habitRepository = new HabitRepository();
-        HabitCompletionRepository completionRepository = new HabitCompletionRepository();
+        UserRepository userRepository = new UserRepositoryImpl();
+        HabitRepository habitRepository = new HabitRepositoryImpl();
+        HabitCompletionRepository completionRepository = new HabitCompletionRepositoryImpl();
         UserServiceImpl userService = new UserServiceImpl(userRepository);
         HabitServiceImpl habitService = new HabitServiceImpl(habitRepository,completionRepository);
         HabitCompletionServiceImpl completionService = new HabitCompletionServiceImpl(completionRepository);
-        NotificationRepository notificationRepository = new NotificationRepository();
+        NotificationRepository notificationRepository = new NotificationRepositoryImpl();
         NotificationServiceImpl notificationService = new NotificationServiceImpl(notificationRepository);
-        AdminServiceImpl adminServices = new AdminServiceImpl(userRepository,habitRepository);
+        AdminServiceImpl adminServices = new AdminServiceImpl(habitService,userService);
 
-        this.inputReader = new Utils();
+        this.consoleinputReader= new ConsoleReader();
 
 
-        this.userController = new UserController(userService,inputReader);
-        this.habitController = new HabitController(habitService, completionService,notificationService,inputReader);
-        this.adminController = new AdminController(adminServices,inputReader);
+        this.userController = new UserController(userService,consoleinputReader);
+        this.habitController = new HabitController(habitService, completionService,notificationService,consoleinputReader);
+        this.adminController = new AdminController(adminServices,consoleinputReader);
 
     }
 
@@ -109,7 +112,7 @@ public class HelloApplication {
         int choice = -1;
         while (choice < 1 || choice > maxOption) {
             try {
-                choice = Integer.parseInt(inputReader.read("Введите ваш выбор: "));
+                choice = Integer.parseInt(consoleinputReader.read("Введите ваш выбор: "));
                 if (choice < 1 || choice > maxOption) {
                     System.out.println("Неверный выбор, попробуйте снова.");
                 }

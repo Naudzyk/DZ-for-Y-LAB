@@ -6,7 +6,7 @@ import org.example.habit_trackingzhenya.models.Role;
 import org.example.habit_trackingzhenya.models.User;
 import org.example.habit_trackingzhenya.services.AdminServices;
 import org.example.habit_trackingzhenya.services.Impl.AdminServiceImpl;
-import org.example.habit_trackingzhenya.utils.InputReader;
+import org.example.habit_trackingzhenya.utils.ConsoleInputReader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -19,14 +19,14 @@ import static org.mockito.Mockito.*;
 public class AdminControllerTest {
     private AdminController adminController;
     private AdminServiceImpl adminServices;
-    private InputReader inputReader;
+    private ConsoleInputReader consoleInputReader;
     private User user;
 
     @BeforeEach
     public void setUp() {
         adminServices = Mockito.mock(AdminServiceImpl.class);
-        inputReader = Mockito.mock(InputReader.class);
-        adminController = new AdminController(adminServices, inputReader);
+        consoleInputReader = Mockito.mock(ConsoleInputReader.class);
+        adminController = new AdminController(adminServices, consoleInputReader);
         user = new User("User", "user@example.com", "password", Role.USER);
     }
 
@@ -76,7 +76,8 @@ public class AdminControllerTest {
 
     @Test
     public void testBlockUser_Success() {
-        when(inputReader.read("Введите email пользователя для блокировки: ")).thenReturn("user1@example.com");
+        when(consoleInputReader
+.read("Введите email пользователя для блокировки: ")).thenReturn("user1@example.com");
         when(adminServices.blockUser("user1@example.com")).thenReturn(true);
 
         adminController.blockUser();
@@ -86,7 +87,8 @@ public class AdminControllerTest {
 
     @Test
     public void testBlockUser_Failure() {
-        when(inputReader.read("Введите email пользователя для блокировки: ")).thenReturn("user1@example.com");
+        when(consoleInputReader
+.read("Введите email пользователя для блокировки: ")).thenReturn("user1@example.com");
         when(adminServices.blockUser("user1@example.com")).thenReturn(false);
 
         adminController.blockUser();
@@ -96,7 +98,8 @@ public class AdminControllerTest {
 
     @Test
     public void testUnblockUser_Success() {
-        when(inputReader.read("Введите email пользователя для разблокировки: ")).thenReturn("user1@example.com");
+        when(consoleInputReader
+.read("Введите email пользователя для разблокировки: ")).thenReturn("user1@example.com");
         when(adminServices.unblockUser("user1@example.com")).thenReturn(true);
 
         adminController.unblockUser();
@@ -106,7 +109,8 @@ public class AdminControllerTest {
 
     @Test
     public void testUnblockUser_Failure() {
-        when(inputReader.read("Введите email пользователя для разблокировки: ")).thenReturn("user1@example.com");
+        when(consoleInputReader
+.read("Введите email пользователя для разблокировки: ")).thenReturn("user1@example.com");
         when(adminServices.unblockUser("user1@example.com")).thenReturn(false);
 
         adminController.unblockUser();
@@ -116,7 +120,8 @@ public class AdminControllerTest {
 
     @Test
     public void testDeleteUser_Success() {
-        when(inputReader.read("Введите email пользователя для удаления: ")).thenReturn("user1@example.com");
+        when(consoleInputReader
+.read("Введите email пользователя для удаления: ")).thenReturn("user1@example.com");
         when(adminServices.deleteUser("user1@example.com")).thenReturn(true);
 
         adminController.deleteUser();
@@ -126,7 +131,8 @@ public class AdminControllerTest {
 
     @Test
     public void testDeleteUser_Failure() {
-        when(inputReader.read("Введите email пользователя для удаления: ")).thenReturn("user1@example.com");
+        when(consoleInputReader
+.read("Введите email пользователя для удаления: ")).thenReturn("user1@example.com");
         when(adminServices.deleteUser("user1@example.com")).thenReturn(false);
 
         adminController.deleteUser();

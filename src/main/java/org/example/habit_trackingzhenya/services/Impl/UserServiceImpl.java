@@ -1,9 +1,13 @@
 package org.example.habit_trackingzhenya.services.Impl;
 
 import lombok.RequiredArgsConstructor;
+import org.example.habit_trackingzhenya.models.Role;
 import org.example.habit_trackingzhenya.models.User;
 import org.example.habit_trackingzhenya.repositories.UserRepository;
 import org.example.habit_trackingzhenya.services.UserService;
+
+import java.util.List;
+
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
@@ -77,6 +81,41 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.getUserByEmail(email);
         if(user != null && user.getPassword().equals(newPassword)) {
             user.setPassword(newPassword);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public List<User> getAllUsers() {
+        return userRepository.getAllUsers();
+    }
+
+    @Override
+    public boolean deleteUserForAdmin(String email) {
+        User user = userRepository.findByEmail(email);
+        if (user != null) {
+            userRepository.deleteUser(email);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean unblockUser(String email) {
+        User user = userRepository.findByEmail(email);
+        if (user != null) {
+            user.setBlocked(false);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean blockUser(String email) {
+        User user = userRepository.findByEmail(email);
+        if (user != null && user.getRole() != Role.ADMIN) {
+            user.setBlocked(true);
             return true;
         }
         return false;
