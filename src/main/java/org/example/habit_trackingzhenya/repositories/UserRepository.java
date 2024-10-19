@@ -2,24 +2,28 @@ package org.example.habit_trackingzhenya.repositories;
 
 import org.example.habit_trackingzhenya.models.User;
 
+import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 public interface UserRepository {
-    void addUser (User user);
+    void insertUser(User user,String sql) throws SQLException;
 
-    User getUserByEmail(String email);
+    void addUser (User user) throws SQLException;
 
-    boolean existsByEmail(String email);
+    Optional<User> getUserByEmail(String email) throws SQLException;
 
-    void deleteUser(String email);
+    boolean existsByEmail(String email) throws SQLException;
 
-    User findByEmail(String email);
+    boolean deleteUser(String email) throws SQLException;
 
-    void updateEmail(String oldEmail, String newEmail);
+    Optional<User> findByEmail(String email) throws SQLException;
 
-    boolean updateName(String email, String newName);
+    void updateEmail(String oldEmail, String newEmail) throws SQLException;
 
-    boolean updatePassword(String email, String newPassword);
+    boolean updateName(String email, String newName) throws SQLException;
 
-    List<User> getAllUsers();
+    boolean updatePassword(String email, String newPassword) throws SQLException;
+
+    Optional<List<User>> getAllUsers() throws SQLException;
 }

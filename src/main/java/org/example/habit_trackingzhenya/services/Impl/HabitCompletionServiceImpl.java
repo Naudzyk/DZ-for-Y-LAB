@@ -6,6 +6,7 @@ import org.example.habit_trackingzhenya.models.HabitCompletion;
 import org.example.habit_trackingzhenya.repositories.HabitCompletionRepository;
 import org.example.habit_trackingzhenya.services.HabitCompletionService;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -19,27 +20,30 @@ public class HabitCompletionServiceImpl implements HabitCompletionService {
     }
 
     @Override
-    public void markHabitCompleted(Habit habit) {
+    public void markHabitCompleted(Habit habit) throws SQLException {
+        if (habit == null || habit.getId() == null) {
+        throw new IllegalArgumentException("Habit must be initialized and have a valid ID.");
+        }
          habitCompletionRepository.addCompletion(habit, LocalDate.now());
     }
 
     @Override
-    public List<HabitCompletion> getCompletionsForHabit(Habit habit) {
+    public List<HabitCompletion> getCompletionsForHabit(Habit habit) throws SQLException {
         return habitCompletionRepository.getCompletionsForHabit(habit);
     }
 
     @Override
-    public List<HabitCompletion> getCompletionsForHabitInPeriod(Habit habit, LocalDate startDate, LocalDate endDate) {
+    public List<HabitCompletion> getCompletionsForHabitInPeriod(Habit habit, LocalDate startDate, LocalDate endDate) throws SQLException {
         return habitCompletionRepository.getCompletionsForHabitInPeriod(habit, startDate, endDate);
     }
 
     @Override
-    public int getCompletionCountForHabitInPeriod(Habit habit, LocalDate startDate, LocalDate endDate) {
+    public int getCompletionCountForHabitInPeriod(Habit habit, LocalDate startDate, LocalDate endDate) throws SQLException {
         return getCompletionsForHabitInPeriod(habit, startDate, endDate).size();
     }
 
     @Override
-    public int getCurrentStreak(Habit habit) {
+    public int getCurrentStreak(Habit habit) throws SQLException {
         List<HabitCompletion> completions = getCompletionsForHabit(habit);
         if (completions.isEmpty()) {
             return 0;
@@ -62,14 +66,14 @@ public class HabitCompletionServiceImpl implements HabitCompletionService {
     }
 
     @Override
-    public double getCompletionPercentageForPeriod(Habit habit, LocalDate startDate, LocalDate endDate) {
+    public double getCompletionPercentageForPeriod(Habit habit, LocalDate startDate, LocalDate endDate) throws SQLException {
         long totalDays = ChronoUnit.DAYS.between(startDate, endDate) + 1;
         int completionCount = getCompletionCountForHabitInPeriod(habit, startDate, endDate);
         return (double) completionCount / totalDays * 100;
     }
 
     @Override
-    public String generateProgressReport(Habit habit, LocalDate startDate, LocalDate endDate) {
+    public String generateProgressReport(Habit habit, LocalDate startDate, LocalDate endDate) throws SQLException {
         int completionCount = getCompletionCountForHabitInPeriod(habit, startDate, endDate);
         int currentStreak = getCurrentStreak(habit);
         double completionPercentage = getCompletionPercentageForPeriod(habit, startDate, endDate);

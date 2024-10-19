@@ -1,6 +1,7 @@
 package org.example.habit_trackingzhenya.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.example.habit_trackingzhenya.utils.*;
 import org.example.habit_trackingzhenya.exception.DeleteException;
 import org.example.habit_trackingzhenya.exception.EntityNotFoundException;
 import org.example.habit_trackingzhenya.models.Habit;
@@ -8,9 +9,9 @@ import org.example.habit_trackingzhenya.models.User;
 import org.example.habit_trackingzhenya.services.AdminServices;
 import org.example.habit_trackingzhenya.services.Impl.AdminServiceImpl;
 
-import org.example.habit_trackingzhenya.utils.ConsoleInputReader;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -27,14 +28,14 @@ public class AdminController {
 
      public void viewAllUsers() {
         try {
-            List<User> users = adminServices.getAllUsers();
+            Optional<List<User>> users = adminServices.getAllUsers();
             if (users.isEmpty()) {
                 System.out.println("Нет пользователей.");
                 return;
             }
 
             System.out.println("Список пользователей:");
-            for (User user : users) {
+            for (User user : users.orElse(null)) {
                 System.out.println(user.getEmail() + " - " + user.getName() + (user.isBlocked() ? " (заблокирован)" : ""));
             }
         } catch (Exception e) {

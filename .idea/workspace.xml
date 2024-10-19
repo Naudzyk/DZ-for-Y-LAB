@@ -4,42 +4,75 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="73d927e6-f1bc-4ab3-8d9e-eff3121fc453" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/exception/EntityNotFoundException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/repositories/Impl/HabitCompletionRepositoryImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/repositories/Impl/HabitRepositoryImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/repositories/Impl/NotificationRepositoryImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/repositories/Impl/UserRepositoryImpl.java" afterDir="false" />
+    <list default="true" id="73d927e6-f1bc-4ab3-8d9e-eff3121fc453" name="Changes" comment="Removed unnecessary Exceptions&#10;Created interfaces for repositories&#10;Reworked AdminService&#10;and fixed other errors">
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DockerFile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/infrastructure/create_db.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/infrastructure/run_liquibase.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/utils/DatabaseConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/db.changelog-001-create-schema.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/db.changelog-002-create-sequences.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/db.changelog-003-create-table.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/db.changelog-changelog-master.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/db.changelog/liquibase.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/org/example/habit_trackingzhenya/services/NotificationServiceImplTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.mvn/wrapper/maven-wrapper.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.MD" beforeDir="false" afterPath="$PROJECT_DIR$/README.MD" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/module-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/module-info.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/HelloApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/HelloApplication.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/controller/AdminController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/controller/AdminController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/controller/HabitController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/controller/HabitController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/controller/UserController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/exception/AdminException.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/exception/EmailException.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/exception/MarkHabitException.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/exception/SecurityException.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/exception/BlockedUserException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/exception/BlockedUserException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/exception/DeleteException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/exception/DeleteException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/exception/EditException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/exception/EditException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/exception/HabitException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/exception/HabitException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/exception/InputInvalidException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/exception/InputInvalidException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/exception/RegistrationException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/exception/RegistrationException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/exception/UpdateException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/exception/UpdateException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/models/Frequency.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/models/Frequency.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/models/Habit.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/models/Habit.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/models/HabitCompletion.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/models/HabitCompletion.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/models/Notification.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/models/Notification.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/models/Role.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/models/Role.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/models/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/models/User.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/repositories/HabitCompletionRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/repositories/HabitCompletionRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/repositories/HabitRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/repositories/HabitRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/repositories/Impl/HabitCompletionRepositoryImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/repositories/Impl/HabitCompletionRepositoryImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/repositories/Impl/HabitRepositoryImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/repositories/Impl/HabitRepositoryImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/repositories/Impl/NotificationRepositoryImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/repositories/Impl/NotificationRepositoryImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/repositories/Impl/UserRepositoryImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/repositories/Impl/UserRepositoryImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/repositories/NotificationRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/repositories/NotificationRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/repositories/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/repositories/UserRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/services/AdminServices.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/services/AdminServices.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/services/HabitCompletionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/services/HabitCompletionService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/services/HabitService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/services/HabitService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/services/Impl/AdminServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/services/Impl/AdminServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/services/Impl/HabitCompletionServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/services/Impl/HabitCompletionServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/services/Impl/HabitServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/services/Impl/HabitServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/services/Impl/NotificationServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/services/Impl/NotificationServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/services/Impl/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/services/Impl/UserServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/services/NotificationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/services/NotificationService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/services/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/services/UserService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/utils/InputReader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/utils/ConsoleInputReader.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/utils/Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/habit_trackingzhenya/utils/ConsoleReader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/org/example/habit_trackingzhenya/hello-view.fxml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/org/example/habit_trackingzhenya/controller/AdminControllerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/example/habit_trackingzhenya/controller/AdminControllerTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/org/example/habit_trackingzhenya/controller/HabitControllerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/example/habit_trackingzhenya/controller/HabitControllerTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/org/example/habit_trackingzhenya/controller/UserControllerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/example/habit_trackingzhenya/controller/UserControllerTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/org/example/habit_trackingzhenya/repository/HabitCompletionRepositoryTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/example/habit_trackingzhenya/repository/HabitCompletionRepositoryTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/org/example/habit_trackingzhenya/repository/HabitRepositoryTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/example/habit_trackingzhenya/repository/HabitRepositoryTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/org/example/habit_trackingzhenya/repository/NotificationRepositoryTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/example/habit_trackingzhenya/repository/NotificationRepositoryTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/org/example/habit_trackingzhenya/repository/UserRepositoryTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/example/habit_trackingzhenya/repository/UserRepositoryTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/org/example/habit_trackingzhenya/repository/HabitCompletionRepositoryTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/example/habit_trackingzhenya/repository/HabitCompletionRepositoryImplTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/org/example/habit_trackingzhenya/repository/HabitRepositoryTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/example/habit_trackingzhenya/repository/HabitRepositoryImplTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/org/example/habit_trackingzhenya/repository/NotificationRepositoryTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/example/habit_trackingzhenya/repository/NotificationRepositoryImplTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/org/example/habit_trackingzhenya/repository/UserRepositoryTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/example/habit_trackingzhenya/repository/UserRepositoryImplTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/org/example/habit_trackingzhenya/services/AdminServiceImplTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/example/habit_trackingzhenya/services/AdminServiceImplTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/org/example/habit_trackingzhenya/services/HabitCompletionServiceImplTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/example/habit_trackingzhenya/services/HabitCompletionServiceImplTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/org/example/habit_trackingzhenya/services/HabitServiceImplTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/example/habit_trackingzhenya/services/HabitServiceImplTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/org/example/habit_trackingzhenya/services/NotoficationServiceImplTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/org/example/habit_trackingzhenya/services/UserServiceImplTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/example/habit_trackingzhenya/services/UserServiceImplTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,8 +84,8 @@
       <list>
         <option value="Enum" />
         <option value="Class" />
-        <option value="Interface" />
         <option value="Exception" />
+        <option value="Interface" />
       </list>
     </option>
   </component>
@@ -64,18 +97,22 @@
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "Naudzyk"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;Naudzyk&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/Naudzyk/DZ-for-Y-LAB",
-    "accountId": "39e75fe5-d13e-4323-909f-3f1f23af5101"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Naudzyk/DZ-for-Y-LAB&quot;,
+    &quot;accountId&quot;: &quot;39e75fe5-d13e-4323-909f-3f1f23af5101&quot;
   }
-}]]></component>
+}</component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
   <component name="MavenImportPreferences">
     <option name="generalSettings">
       <MavenGeneralSettings>
@@ -95,33 +132,62 @@
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
     &quot;Application.HelloApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Docker.docker-compose.yml: Compose Deployment.executor&quot;: &quot;Run&quot;,
     &quot;JUnit.AdminControllerTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.AdminServiceImplTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.AdminControllerTest.testViewAllUsers_Success.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.AdminServiceImplTest.executor&quot;: &quot;Debug&quot;,
+    &quot;JUnit.HabitCompletionRepositoryImplTest.executor&quot;: &quot;Run&quot;,
     &quot;JUnit.HabitCompletionRepositoryTest.executor&quot;: &quot;Run&quot;,
     &quot;JUnit.HabitCompletionServiceImplTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.HabitCompletionServiceImplTest.testGenerateProgressReport.executor&quot;: &quot;Run&quot;,
     &quot;JUnit.HabitControllerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.HabitRepositoryImplTest.executor&quot;: &quot;Run&quot;,
     &quot;JUnit.HabitRepositoryTest.executor&quot;: &quot;Run&quot;,
     &quot;JUnit.HabitServiceImplTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.NotificationRepositoryImplTest.executor&quot;: &quot;Run&quot;,
     &quot;JUnit.NotificationRepositoryTest.executor&quot;: &quot;Run&quot;,
     &quot;JUnit.NotificationRepositoryTest.testNotificationConstructorWithoutHabit.executor&quot;: &quot;Run&quot;,
     &quot;JUnit.NotoficationServiceImplTest.executor&quot;: &quot;Run&quot;,
     &quot;JUnit.UserControllerTest.executor&quot;: &quot;Run&quot;,
     &quot;JUnit.UserControllerTest.testRegisterUser_Success.executor&quot;: &quot;Run&quot;,
     &quot;JUnit.UserControllerTest.testUpdatePassword_Success.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserRepositoryImplTest.executor&quot;: &quot;Run&quot;,
     &quot;JUnit.UserRepositoryTest.executor&quot;: &quot;Run&quot;,
     &quot;JUnit.UserServiceImplTest.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;homework__1&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;homework__2&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;MavenSettings&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  },
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;postgresql&quot;
+    ]
   }
 }</component>
+  <component name="RecentsManager">
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="org.example.habit_trackingzhenya.utils" />
+      <recent name="org.example.habit_trackingzhenya.exception" />
+      <recent name="org.example.habit_trackingzhenya.controller" />
+      <recent name="org.example.habit_trackingzhenya.services.Impl" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\EVgeNII\Desktop\Habit_TrackingZhenya\src\main\resources" />
+      <recent name="C:\Users\EVgeNII\Desktop\Habit_TrackingZhenya\src\main\resources\db.changelog" />
+      <recent name="C:\Users\EVgeNII\Desktop\Habit_TrackingZhenya\src\main\resources\db\changelog" />
+      <recent name="C:\Users\EVgeNII\Desktop\Habit_TrackingZhenya\infrastructure" />
+      <recent name="C:\Users\EVgeNII\Desktop\Habit_TrackingZhenya\infrastructure\db" />
+    </key>
+  </component>
   <component name="RunManager" selected="Application.HelloApplication">
     <configuration name="HelloApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="org.example.habit_trackingzhenya.HelloApplication" />
@@ -136,73 +202,79 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="HabitCompletionServiceImplTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="HabitCompletionRepositoryImplTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="Habit_Tracking_Homework_1" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="org.example.habit_trackingzhenya.services.*" />
+          <option name="PATTERN" value="org.example.habit_trackingzhenya.repository.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="org.example.habit_trackingzhenya.services" />
-      <option name="MAIN_CLASS_NAME" value="org.example.habit_trackingzhenya.services.HabitCompletionServiceImplTest" />
+      <option name="PACKAGE_NAME" value="org.example.habit_trackingzhenya.repository" />
+      <option name="MAIN_CLASS_NAME" value="org.example.habit_trackingzhenya.repository.HabitCompletionRepositoryImplTest" />
       <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="HabitServiceImplTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="HabitRepositoryImplTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="Habit_Tracking_Homework_1" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="org.example.habit_trackingzhenya.services.*" />
+          <option name="PATTERN" value="org.example.habit_trackingzhenya.repository.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="org.example.habit_trackingzhenya.services" />
-      <option name="MAIN_CLASS_NAME" value="org.example.habit_trackingzhenya.services.HabitServiceImplTest" />
+      <option name="PACKAGE_NAME" value="org.example.habit_trackingzhenya.repository" />
+      <option name="MAIN_CLASS_NAME" value="org.example.habit_trackingzhenya.repository.HabitRepositoryImplTest" />
       <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="NotoficationServiceImplTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="NotificationRepositoryImplTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="Habit_Tracking_Homework_1" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="org.example.habit_trackingzhenya.services.*" />
+          <option name="PATTERN" value="org.example.habit_trackingzhenya.repository.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="org.example.habit_trackingzhenya.services" />
-      <option name="MAIN_CLASS_NAME" value="org.example.habit_trackingzhenya.services.NotoficationServiceImplTest" />
+      <option name="PACKAGE_NAME" value="org.example.habit_trackingzhenya.repository" />
+      <option name="MAIN_CLASS_NAME" value="org.example.habit_trackingzhenya.repository.NotificationRepositoryImplTest" />
       <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="UserServiceImplTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="UserRepositoryImplTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="Habit_Tracking_Homework_1" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="org.example.habit_trackingzhenya.services.*" />
+          <option name="PATTERN" value="org.example.habit_trackingzhenya.repository.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="org.example.habit_trackingzhenya.services" />
-      <option name="MAIN_CLASS_NAME" value="org.example.habit_trackingzhenya.services.UserServiceImplTest" />
+      <option name="PACKAGE_NAME" value="org.example.habit_trackingzhenya.repository" />
+      <option name="MAIN_CLASS_NAME" value="org.example.habit_trackingzhenya.repository.UserRepositoryImplTest" />
       <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
+    </configuration>
+    <configuration default="true" type="docker-deploy" factoryName="docker-compose.yml" temporary="true">
+      <deployment type="docker-compose.yml">
+        <settings />
+      </deployment>
+      <method v="2" />
     </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="Application.HelloApplication" />
-        <item itemvalue="JUnit.UserServiceImplTest" />
-        <item itemvalue="JUnit.NotoficationServiceImplTest" />
-        <item itemvalue="JUnit.HabitServiceImplTest" />
-        <item itemvalue="JUnit.HabitCompletionServiceImplTest" />
+        <item itemvalue="JUnit.HabitCompletionRepositoryImplTest" />
+        <item itemvalue="JUnit.HabitRepositoryImplTest" />
+        <item itemvalue="JUnit.NotificationRepositoryImplTest" />
+        <item itemvalue="JUnit.UserRepositoryImplTest" />
       </list>
     </recent_temporary>
   </component>
@@ -225,6 +297,18 @@
       <workItem from="1728631353748" duration="17796000" />
       <workItem from="1728650659373" duration="18400000" />
       <workItem from="1728967908648" duration="12408000" />
+      <workItem from="1729054900957" duration="1949000" />
+      <workItem from="1729070423241" duration="2151000" />
+      <workItem from="1729072653344" duration="24253000" />
+      <workItem from="1729215350766" duration="4411000" />
+      <workItem from="1729235027531" duration="13361000" />
+      <workItem from="1729304105545" duration="3842000" />
+      <workItem from="1729308047961" duration="10055000" />
+      <workItem from="1729335879012" duration="17582000" />
+      <workItem from="1729353710124" duration="1180000" />
+      <workItem from="1729354956511" duration="315000" />
+      <workItem from="1729355641101" duration="59000" />
+      <workItem from="1729355708179" duration="905000" />
     </task>
     <servers />
   </component>
@@ -236,7 +320,19 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="homework_1" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
           </value>
         </entry>
       </map>

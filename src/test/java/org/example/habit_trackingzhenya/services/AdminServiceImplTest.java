@@ -1,30 +1,25 @@
 package org.example.habit_trackingzhenya.services;
 
-import org.example.habit_trackingzhenya.models.Frequency;
 import org.example.habit_trackingzhenya.models.Habit;
-import org.example.habit_trackingzhenya.models.Role;
 import org.example.habit_trackingzhenya.models.User;
-import org.example.habit_trackingzhenya.repositories.HabitRepository;
-import org.example.habit_trackingzhenya.repositories.UserRepository;
 import org.example.habit_trackingzhenya.services.Impl.AdminServiceImpl;
-import org.example.habit_trackingzhenya.services.Impl.HabitServiceImpl;
-import org.example.habit_trackingzhenya.services.Impl.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 
-
+import static java.time.LocalDate.now;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class AdminServiceImplTest {
+public class AdminServiceImplTest {
 
     @Mock
     private UserService userService;
@@ -35,86 +30,130 @@ class AdminServiceImplTest {
     @InjectMocks
     private AdminServiceImpl adminService;
 
-    private User regularUser;
-
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         MockitoAnnotations.openMocks(this);
-        regularUser = new User("User", "user@example.com", "password", Role.USER);
     }
 
     @Test
-    void testIsAdmin() {
-        User adminUser = new User("Admin", "admin@example.com", "password", Role.ADMIN);
+    public void testIsAdmin() {
+        // Arrange
+        User adminUser = User.builder()
+                .id(1L)
+                .name("Admin User")
+                .email("admin@example.com")
+                .password("password")
+                .role(Role.ADMIN)
+                .build();
 
+        User regularUser = User.builder()
+                .id(2L)
+                .name("Regular User")
+                .email("user@example.com")
+                .password("password")
+                .role(Role.USER)
+                .build();
 
+        // Act & Assert
         assertTrue(adminService.isAdmin(adminUser));
         assertFalse(adminService.isAdmin(regularUser));
     }
 
     @Test
-    void testGetAllUsers() {
-        List<User> users = Arrays.asList(
-                new User("User1", "user1@example.com", "password", Role.USER),
-                new User("User2", "user2@example.com", "password", Role.USER)
-        );
+    public void testGetAllUsers() throws SQLException {
+        // Arrange
+        User user1 = User.builder()
+                .id(1L)
+                .name("User1")
+                .email("user1@example.com")
+                .password("password1")
+                .role(Role.USER)
+                .build();
 
-        when(userService.getAllUsers()).thenReturn(users);
+        User user2 = User.builder()
+                .id(2L)
+                .name("User2")
+                .email("user2@example.com")
+                .password("password2")
+                .role(Role.USER)
+                .build();
 
-        List<User> result = adminService.getAllUsers();
+        List<User> users = Arrays.asList(user1, user2);
+        when(userService.getAllUsers()).thenReturn(Optional.of(users));
 
-        assertEquals(users, result);
+        // Act
+        Optional<List<User>> result = adminService.getAllUsers();
+
+        // Assert
+        assertTrue(result.isPresent());
+        assertEquals(2, result.get().size());
         verify(userService, times(1)).getAllUsers();
     }
 
     @Test
-    void testGetAllHabits() {
-        List<Habit> habits = Arrays.asList(
-                new Habit("Habit1", "Description1", Frequency.DAILY,regularUser),
-                new Habit("Habit2", "Description2", Frequency.WEEKLY,regularUser)
-        );
+    public void testGetAllHabits() throws SQLException {
+        // Arrange
+        Habit habit1 = Habit.builder()
+                .id(1L)
+                .name("Habit1")
+                .description("Description1")
+                .frequency(Frequency.DAILY)
+                .build();
 
+        Habit habit2 = Habit.builder()
+                .id(2L)
+                .name("Habit2")
+                .description("Description2")
+                .frequency(Frequency.WEEKLY)
+                .build();
+
+        List<Habit> habits = Arrays.asList(habit1, habit2);
         when(habitService.getAllHabits()).thenReturn(habits);
 
+        // Act
         List<Habit> result = adminService.getAllHabits();
 
-        assertEquals(habits, result);
+        // Assert
+        assertEquals(2, result.size());
         verify(habitService, times(1)).getAllHabits();
     }
 
     @Test
-    void testBlockUser() {
-        String email = "user@example.com";
+    public void testBlockUser() throws SQLException {
+        // Arrange
+        when(userService.blockUser("user1@example.com")).thenReturn(true);
 
-        when(userService.blockUser(email)).thenReturn(true);
+        // Act
+        boolean result = adminService.blockUser("user1@example.com");
 
-        boolean result = adminService.blockUser(email);
-
+        // Assert
         assertTrue(result);
-        verify(userService, times(1)).blockUser(email);
+        verify(userService, times(1)).blockUser("user1@example.com");
     }
 
     @Test
-    void testUnblockUser() {
-        String email = "user@example.com";
+    public void testUnblockUser() throws SQLException {
+        // Arrange
+        when(userService.unblockUser("user1@example.com")).thenReturn(true);
 
-        when(userService.unblockUser(email)).thenReturn(true);
+        // Act
+        boolean result = adminService.unblockUser("user1@example.com");
 
-        boolean result = adminService.unblockUser(email);
-
+        // Assert
         assertTrue(result);
-        verify(userService, times(1)).unblockUser(email);
+        verify(userService, times(1)).unblockUser("user1@example.com");
     }
 
     @Test
-    void testDeleteUser() {
-        String email = "user@example.com";
+    public void testDeleteUser() throws SQLException {
+        // Arrange
+        when(userService.deleteUserForAdmin("user1@example.com")).thenReturn(true);
 
-        when(userService.deleteUserForAdmin(email)).thenReturn(true);
+        // Act
+        boolean result = adminService.deleteUser("user1@example.com");
 
-        boolean result = adminService.deleteUser(email);
-
+        // Assert
         assertTrue(result);
-        verify(userService, times(1)).deleteUserForAdmin(email);
+        verify(userService, times(1)).deleteUserForAdmin("user1@example.com");
     }
 }

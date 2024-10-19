@@ -1,5 +1,7 @@
 package org.example.habit_trackingzhenya;
 
+
+import com.sun.tools.javac.Main;
 import org.example.habit_trackingzhenya.controller.AdminController;
 import org.example.habit_trackingzhenya.controller.HabitController;
 import org.example.habit_trackingzhenya.controller.UserController;
@@ -16,31 +18,28 @@ import org.example.habit_trackingzhenya.repositories.UserRepository;
 import org.example.habit_trackingzhenya.services.Impl.*;
 import org.example.habit_trackingzhenya.utils.ConsoleInputReader;
 import org.example.habit_trackingzhenya.utils.ConsoleReader;
+import org.example.habit_trackingzhenya.utils.DatabaseConfig;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class HelloApplication {
     private UserController userController;
     private HabitController habitController;
     private AdminController adminController;
     private User currentUser;
     private ConsoleInputReader consoleinputReader;
-
-    public HelloApplication() {
-        UserRepository userRepository = new UserRepositoryImpl();
-        HabitRepository habitRepository = new HabitRepositoryImpl();
-        HabitCompletionRepository completionRepository = new HabitCompletionRepositoryImpl();
-        UserServiceImpl userService = new UserServiceImpl(userRepository);
-        HabitServiceImpl habitService = new HabitServiceImpl(habitRepository,completionRepository);
-        HabitCompletionServiceImpl completionService = new HabitCompletionServiceImpl(completionRepository);
-        NotificationRepository notificationRepository = new NotificationRepositoryImpl();
-        NotificationServiceImpl notificationService = new NotificationServiceImpl(notificationRepository);
-        AdminServiceImpl adminServices = new AdminServiceImpl(habitService,userService);
-
-        this.consoleinputReader= new ConsoleReader();
+    private static final Logger logger = Logger.getLogger(Main.class.getName());
 
 
-        this.userController = new UserController(userService,consoleinputReader);
-        this.habitController = new HabitController(habitService, completionService,notificationService,consoleinputReader);
-        this.adminController = new AdminController(adminServices,consoleinputReader);
 
+ public HelloApplication(UserController userController, HabitController habitController, AdminController adminController, ConsoleInputReader consoleInputReader) {
+        this.userController = userController;
+        this.habitController = habitController;
+        this.adminController = adminController;
+        this.consoleinputReader = consoleInputReader;
     }
 
     public void start() {
@@ -70,7 +69,7 @@ public class HelloApplication {
                     handleAdminChoice(choice);
                 } else {
                     showUserMenu();
-                    int choice = getUserChoice(12);
+                    int choice = getUserChoice(13);
                     handleUserChoice(choice);
                 }
             }
@@ -195,8 +194,34 @@ public class HelloApplication {
         }
 
 
-    public static void main(String[] args) {
-        HelloApplication app = new HelloApplication();
-        app.start();
+     public static void main(String[] args) {
+
+        try {
+            Connection connection = DatabaseConfig.getConnection();
+            DatabaseConfig.applyLiquibaseChangelog();
+
+            UserRepository userRepository = new UserRepositoryImpl(connection);
+            HabitRepository habitRepository = new HabitRepositoryImpl(connection);
+            HabitCompletionRepository completionRepository = new HabitCompletionRepositoryImpl(connection);
+            NotificationRepository notificationRepository = new NotificationRepositoryImpl(connection);
+
+            UserServiceImpl userService = new UserServiceImpl(userRepository);
+            HabitServiceImpl habitService = new HabitServiceImpl(habitRepository, completionRepository);
+            HabitCompletionServiceImpl completionService = new HabitCompletionServiceImpl(completionRepository);
+            NotificationServiceImpl notificationService = new NotificationServiceImpl(notificationRepository);
+            AdminServiceImpl adminService = new AdminServiceImpl(habitService, userService);
+
+            ConsoleInputReader consoleInputReader = new ConsoleReader();
+
+            UserController userController = new UserController(userService, consoleInputReader);
+            HabitController habitController = new HabitController(habitService, completionService, notificationService, consoleInputReader);
+            AdminController adminController = new AdminController(adminService, consoleInputReader);
+
+            HelloApplication app = new HelloApplication(userController, habitController, adminController, consoleInputReader);
+            app.start();
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Ошибка при инициализации приложения: " + e.getMessage(), e);
+            e.printStackTrace();
+        }
     }
 }

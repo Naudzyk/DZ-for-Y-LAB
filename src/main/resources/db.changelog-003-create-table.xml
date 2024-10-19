@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd">
+
+    <!-- Создание таблицы users -->
+    <changeSet id="003" author="naudzyk">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="users" schemaName="habit_schema"/>
+            </not>
+        </preConditions>
+        <sql>
+            CREATE TABLE habit_schema.users (
+                id BIGINT PRIMARY KEY DEFAULT nextval('habit_schema.user_id_seq'),
+                name VARCHAR(255) NOT NULL,
+                email VARCHAR(255) NOT NULL UNIQUE,
+                password VARCHAR(255) NOT NULL,
+                blocked BOOLEAN NOT NULL DEFAULT FALSE,
+                role VARCHAR(50) NOT NULL
+            );
+        </sql>
+    </changeSet>
+
+    <!-- Создание таблицы habits -->
+    <changeSet id="004" author="naudzyk">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="habits" schemaName="habit_schema"/>
+            </not>
+        </preConditions>
+        <sql>
+            CREATE TABLE habit_schema.habits (
+                id BIGINT PRIMARY KEY DEFAULT nextval('habit_schema.habit_id_seq'),
+                name VARCHAR(255) NOT NULL,
+                description TEXT NOT NULL,
+                frequency VARCHAR(50) NOT NULL,
+                creation_date DATE NOT NULL,
+                user_id BIGINT NOT NULL,
+                CONSTRAINT fk_habits_users FOREIGN KEY (user_id) REFERENCES habit_schema.users(id)
+            );
+        </sql>
+    </changeSet>
+
+    <!-- Создание таблицы notifications -->
+    <changeSet id="005" author="naudzyk">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="notifications" schemaName="habit_schema"/>
+            </not>
+        </preConditions>
+        <sql>
+            CREATE TABLE habit_schema.notifications (
+                id BIGINT PRIMARY KEY DEFAULT nextval('habit_schema.notification_id_seq'),
+                user_id BIGINT NOT NULL,
+                habit_id BIGINT,
+                message TEXT NOT NULL,
+                send_time TIMESTAMP NOT NULL,
+                CONSTRAINT fk_notifications_users FOREIGN KEY (user_id) REFERENCES habit_schema.users(id),
+                CONSTRAINT fk_notifications_habits FOREIGN KEY (habit_id) REFERENCES habit_schema.habits(id)
+            );
+        </sql>
+    </changeSet>
+
+    <!-- Создание таблицы habit_completions -->
+    <changeSet id="006" author="naudzyk">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="habit_completions" schemaName="habit_schema"/>
+            </not>
+        </preConditions>
+        <sql>
+            CREATE TABLE habit_schema.habit_completions (
+                id BIGINT PRIMARY KEY DEFAULT nextval('habit_schema.habit_completion_id_seq'),
+                habit_id BIGINT NOT NULL,
+                completion_date DATE NOT NULL,
+                CONSTRAINT fk_habit_completions_habits FOREIGN KEY (habit_id) REFERENCES habit_schema.habits(id)
+            );
+        </sql>
+    </changeSet>
+
+    <!-- Создание таблицы utility -->
+    <changeSet id="007" author="naudzyk">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="utility" schemaName="utility_schema"/>
+            </not>
+        </preConditions>
+        <sql>
+            CREATE TABLE utility_schema.utility (
+                id BIGINT PRIMARY KEY DEFAULT nextval('utility_schema.utility_id_seq'),
+                name VARCHAR(255) NOT NULL,
+                email VARCHAR(255) NOT NULL UNIQUE,
+                password VARCHAR(255) NOT NULL,
+                blocked BOOLEAN NOT NULL DEFAULT FALSE,
+                role VARCHAR(50) NOT NULL
+            );
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

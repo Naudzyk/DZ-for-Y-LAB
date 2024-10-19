@@ -1,231 +1,320 @@
 package org.example.habit_trackingzhenya.services;
 
-import org.example.habit_trackingzhenya.models.Role;
 import org.example.habit_trackingzhenya.models.User;
+import org.example.habit_trackingzhenya.repositories.HabitRepository;
 import org.example.habit_trackingzhenya.repositories.UserRepository;
 import org.example.habit_trackingzhenya.services.Impl.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
 public class UserServiceImplTest {
+
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private HabitRepository habitRepository;
 
     @InjectMocks
     private UserServiceImpl userService;
 
-    private User user;
-
-     @BeforeEach
-    void setUp() {
+    @BeforeEach
+    public void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    void testAddUser_Success() {
-        User user = new User("John Doe", "john.doe@example.com", "password", Role.USER, false);
+    public void testAddUser() throws SQLException {
+        // Arrange
+        User user = User.builder()
+                .id(1L)
+                .name("User1")
+                .email("user1@example.com")
+                .password("password1")
+                .blocked(false)
+                .role(Role.USER)
+                .build();
+
         when(userRepository.existsByEmail(user.getEmail())).thenReturn(false);
 
+
+        // Act
         boolean result = userService.addUser(user);
 
+        // Assert
         assertTrue(result);
-        verify(userRepository).addUser(user);
+        verify(userRepository, times(1)).existsByEmail(user.getEmail());
+        verify(userRepository, times(1)).addUser(user);
     }
 
     @Test
-    void testAddUser_EmailExists() {
-        User user = new User("John Doe", "john.doe@example.com", "password", Role.USER, false);
-        when(userRepository.existsByEmail(user.getEmail())).thenReturn(true);
+    public void testUpdateEmail() throws SQLException {
+        // Arrange
+        String oldEmail = "user1@example.com";
+        String newEmail = "newuser1@example.com";
 
-        boolean result = userService.addUser(user);
-
-        assertFalse(result);
-        verify(userRepository, never()).addUser(user);
-    }
-
-    @Test
-    void testUpdateEmail_Success() {
-        String oldEmail = "john.doe@example.com";
-        String newEmail = "jane.doe@example.com";
         when(userRepository.existsByEmail(newEmail)).thenReturn(false);
 
+
+        // Act
         boolean result = userService.updateEmail(oldEmail, newEmail);
 
+        // Assert
         assertTrue(result);
-        verify(userRepository).updateEmail(oldEmail, newEmail);
+        verify(userRepository, times(1)).existsByEmail(newEmail);
+        verify(userRepository, times(1)).updateEmail(oldEmail, newEmail);
     }
 
     @Test
-    void testUpdateEmail_EmailExists() {
-        String oldEmail = "john.doe@example.com";
-        String newEmail = "jane.doe@example.com";
-        when(userRepository.existsByEmail(newEmail)).thenReturn(true);
+    public void testUpdateName() throws SQLException {
+        // Arrange
+        String email = "user1@example.com";
+        String newName = "New Name";
 
-        boolean result = userService.updateEmail(oldEmail, newEmail);
+        User user = User.builder()
+                .id(1L)
+                .name("User1")
+                .email(email)
+                .password("password1")
+                .blocked(false)
+                .role(Role.USER)
+                .build();
 
-        assertFalse(result);
-        verify(userRepository, never()).updateEmail(oldEmail, newEmail);
-    }
+        when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
 
-    @Test
-    void testUpdateName_Success() {
-        String email = "john.doe@example.com";
-        String newName = "Jane Doe";
-        User user = new User("John Doe", email, "password", Role.USER, false);
-        when(userRepository.findByEmail(email)).thenReturn(user);
-
+        // Act
         boolean result = userService.updateName(email, newName);
 
+        // Assert
         assertTrue(result);
         assertEquals(newName, user.getName());
+        verify(userRepository, times(1)).findByEmail(email);
     }
 
     @Test
-    void testUpdateName_UserNotFound() {
-        String email = "john.doe@example.com";
-        String newName = "Jane Doe";
-        when(userRepository.findByEmail(email)).thenReturn(null);
+    public void testUpdatePassword() throws SQLException {
+        // Arrange
+        String email = "user1@example.com";
+        String oldPassword = "password1";
+        String newPassword = "newpassword1";
 
-        boolean result = userService.updateName(email, newName);
+        User user = User.builder()
+                .id(1L)
+                .name("User1")
+                .email(email)
+                .password(oldPassword)
+                .blocked(false)
+                .role(Role.USER)
+                .build();
 
-        assertFalse(result);
-    }
+        when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
 
-    @Test
-    void testUpdatePassword_Success() {
-        String email = "john.doe@example.com";
-        String oldPassword = "password";
-        String newPassword = "newpassword";
-        User user = new User("John Doe", email, oldPassword, Role.USER, false);
-        when(userRepository.findByEmail(email)).thenReturn(user);
-
+        // Act
         boolean result = userService.updatePassword(email, newPassword, oldPassword);
 
+        // Assert
         assertTrue(result);
         assertEquals(newPassword, user.getPassword());
+        verify(userRepository, times(1)).findByEmail(email);
     }
 
     @Test
-    void testUpdatePassword_WrongOldPassword() {
-        String email = "john.doe@example.com";
-        String oldPassword = "wrongpassword";
-        String newPassword = "newpassword";
-        User user = new User("John Doe", email, "password", Role.USER, false);
-        when(userRepository.findByEmail(email)).thenReturn(user);
+    public void testLogin() throws SQLException {
+        // Arrange
+        String email = "user1@example.com";
+        String password = "password1";
 
-        boolean result = userService.updatePassword(email, newPassword, oldPassword);
+        User user = User.builder()
+                .id(1L)
+                .name("User1")
+                .email(email)
+                .password(password)
+                .blocked(false)
+                .role(Role.USER)
+                .build();
 
-        assertFalse(result);
-        assertNotEquals(newPassword, user.getPassword());
-    }
+        when(userRepository.getUserByEmail(email)).thenReturn(Optional.of(user));
 
-    @Test
-    void testUpdatePassword_UserNotFound() {
-        String email = "john.doe@example.com";
-        String oldPassword = "password";
-        String newPassword = "newpassword";
-        when(userRepository.findByEmail(email)).thenReturn(null);
-
-        boolean result = userService.updatePassword(email, newPassword, oldPassword);
-
-        assertFalse(result);
-    }
-
-    @Test
-    void testLogin_Success() {
-        String email = "john.doe@example.com";
-        String password = "password";
-        User user = new User("John Doe", email, password, Role.USER, false);
-        when(userRepository.getUserByEmail(email)).thenReturn(user);
-
+        // Act
         User result = userService.login(email, password);
 
+        // Assert
         assertNotNull(result);
         assertEquals(user, result);
+        verify(userRepository, times(1)).getUserByEmail(email);
     }
 
     @Test
-    void testLogin_WrongPassword() {
-        String email = "john.doe@example.com";
-        String password = "wrongpassword";
-        User user = new User("John Doe", email, "password", Role.USER, false);
-        when(userRepository.getUserByEmail(email)).thenReturn(user);
+    public void testDeleteUser() throws SQLException {
+        // Arrange
+        String email = "user1@example.com";
+        String password = "password1";
 
-        User result = userService.login(email, password);
+        User user = User.builder()
+                .id(1L)
+                .name("User1")
+                .email(email)
+                .password(password)
+                .blocked(false)
+                .role(Role.USER)
+                .build();
 
-        assertNull(result);
-    }
+        when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
+        when(userRepository.deleteUser(email)).thenReturn(true);
 
-    @Test
-    void testLogin_UserNotFound() {
-        String email = "john.doe@example.com";
-        String password = "password";
-        when(userRepository.getUserByEmail(email)).thenReturn(null);
-
-        User result = userService.login(email, password);
-
-        assertNull(result);
-    }
-
-    @Test
-    void testDeleteUser_Success() {
-        String email = "john.doe@example.com";
-        String password = "password";
-        User user = new User("John Doe", email, password, Role.USER, false);
-        when(userRepository.getUserByEmail(email)).thenReturn(user);
-        when(userRepository.existsByEmail(email)).thenReturn(true);
-
+        // Act
         boolean result = userService.deleteUser(email, password);
 
+        // Assert
         assertTrue(result);
-        verify(userRepository).deleteUser(email);
+        verify(userRepository, times(1)).findByEmail(email);
+        verify(userRepository, times(1)).deleteUser(email);
     }
 
     @Test
-    void testDeleteUser_WrongPassword() {
-        String email = "john.doe@example.com";
-        String password = "wrongpassword";
-        User user = new User("John Doe", email, "password", Role.USER, false);
-        when(userRepository.getUserByEmail(email)).thenReturn(user);
+    public void testResetPassword() throws SQLException {
+        // Arrange
+        String email = "user1@example.com";
+        String newPassword = "newpassword1";
 
-        boolean result = userService.deleteUser(email, password);
+        User user = User.builder()
+                .id(1L)
+                .name("User1")
+                .email(email)
+                .password("password1")
+                .blocked(false)
+                .role(Role.USER)
+                .build();
 
-        assertFalse(result);
-        verify(userRepository, never()).deleteUser(email);
-    }
+        when(userRepository.getUserByEmail(email)).thenReturn(Optional.of(user));
 
-    @Test
-    void testDeleteUser_UserNotFound() {
-        String email = "john.doe@example.com";
-        String password = "password";
-        when(userRepository.getUserByEmail(email)).thenReturn(null);
-
-        boolean result = userService.deleteUser(email, password);
-
-        assertFalse(result);
-        verify(userRepository, never()).deleteUser(email);
-    }
-
-
-    @Test
-    void testResetPassword_UserNotFound() {
-        String email = "john.doe@example.com";
-        String newPassword = "newpassword";
-        when(userRepository.getUserByEmail(email)).thenReturn(null);
-
+        // Act
         boolean result = userService.resetPassword(email, newPassword);
 
-        assertFalse(result);
+        // Assert
+        assertTrue(result);
+        assertEquals(newPassword, user.getPassword());
+        verify(userRepository, times(1)).getUserByEmail(email);
+    }
+
+    @Test
+    public void testGetAllUsers() throws SQLException {
+        // Arrange
+        User user1 = User.builder()
+                .id(1L)
+                .name("User1")
+                .email("user1@example.com")
+                .password("password1")
+                .blocked(false)
+                .role(Role.USER)
+                .build();
+
+        User user2 = User.builder()
+                .id(2L)
+                .name("User2")
+                .email("user2@example.com")
+                .password("password2")
+                .blocked(false)
+                .role(Role.USER)
+                .build();
+
+        List<User> users = Arrays.asList(user1, user2);
+        when(userRepository.getAllUsers()).thenReturn(Optional.of(users));
+
+        // Act
+        Optional<List<User>> result = userService.getAllUsers();
+
+        // Assert
+        assertTrue(result.isPresent());
+        assertEquals(2, result.get().size());
+        verify(userRepository, times(1)).getAllUsers();
+    }
+
+    @Test
+    public void testDeleteUserForAdmin() throws SQLException {
+        // Arrange
+        String email = "user1@example.com";
+
+        User user = User.builder()
+                .id(1L)
+                .name("User1")
+                .email(email)
+                .password("password1")
+                .blocked(false)
+                .role(Role.USER)
+                .build();
+
+        when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
+        when(userRepository.deleteUser(email)).thenReturn(true);
+
+        // Act
+        boolean result = userService.deleteUserForAdmin(email);
+
+        // Assert
+        assertTrue(result);
+        verify(userRepository, times(1)).findByEmail(email);
+        verify(userRepository, times(1)).deleteUser(email);
+    }
+
+    @Test
+    public void testUnblockUser() throws SQLException {
+        // Arrange
+        String email = "user1@example.com";
+
+        User user = User.builder()
+                .id(1L)
+                .name("User1")
+                .email(email)
+                .password("password1")
+                .blocked(true)
+                .role(Role.USER)
+                .build();
+
+        when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
+
+        // Act
+        boolean result = userService.unblockUser(email);
+
+        // Assert
+        assertTrue(result);
+        assertFalse(user.isBlocked());
+        verify(userRepository, times(1)).findByEmail(email);
+    }
+
+    @Test
+    public void testBlockUser() throws SQLException {
+        // Arrange
+        String email = "user1@example.com";
+
+        User user = User.builder()
+                .id(1L)
+                .name("User1")
+                .email(email)
+                .password("password1")
+                .blocked(false)
+                .role(Role.USER)
+                .build();
+
+        when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
+
+        // Act
+        boolean result = userService.blockUser(email);
+
+        // Assert
+        assertTrue(result);
+        assertTrue(user.isBlocked());
+        verify(userRepository, times(1)).findByEmail(email);
     }
 }

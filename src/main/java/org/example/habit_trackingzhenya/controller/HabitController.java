@@ -1,5 +1,6 @@
 package org.example.habit_trackingzhenya.controller;
 
+
 import lombok.RequiredArgsConstructor;
 import org.example.habit_trackingzhenya.exception.*;
 import org.example.habit_trackingzhenya.models.*;
@@ -7,10 +8,12 @@ import org.example.habit_trackingzhenya.services.HabitCompletionService;
 import org.example.habit_trackingzhenya.services.HabitService;
 import org.example.habit_trackingzhenya.services.Impl.HabitCompletionServiceImpl;
 import org.example.habit_trackingzhenya.services.Impl.HabitServiceImpl;
+import org.example.habit_trackingzhenya.exception.InputInvalidException;
 import org.example.habit_trackingzhenya.services.Impl.NotificationServiceImpl;
 import org.example.habit_trackingzhenya.services.NotificationService;
 import org.example.habit_trackingzhenya.utils.ConsoleInputReader;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -31,45 +34,36 @@ public class HabitController {
         this.notificationService = notificationService;
         this.consoleInputReader = consoleInputReader;
     }
-    private void checkUserBlocked(User user) {
+    private void checkUserBlocked(User user) throws BlockedUserException {
             if (user.isBlocked()) {
                 throw new BlockedUserException("Пользователь заблокирован и не может выполнять эту операцию.");
             }
 
     }
 
-    public void createHabit(User user) {
-        try {
-            checkUserBlocked(user);
-            String name = consoleInputReader.read("Введите название привычки: ");
-            String description = consoleInputReader.read("Введите описание привычки: ");
-            String frequencyStr = consoleInputReader.read("Введите частоту (DAILY/WEEKLY): ");
-            Frequency frequency = Frequency.valueOf(frequencyStr.toUpperCase());
+        public void createHabit(User user) {
+            try {
+                String name = consoleInputReader.read("Введите имя привычки: ");
+                String description = consoleInputReader.read("Введите описание привычки: ");
+                String frequency = consoleInputReader.read("Введите частоту привычки (DAILY, WEEKLY): ");
+                Frequency freq = Frequency.valueOf(frequency.toUpperCase());
 
-            boolean success = habitService.createHabit(user, name, description, frequency);
-
-            if (success) {
-                System.out.println("Привычка успешно создана.");
-            } else {
-                throw new HabitException("Ошибка при создании привычки.");
+                boolean created = habitService.createHabit(user, name, description, freq);
+                if (created) {
+                    System.out.println("Привычка успешно создана.");
+                } else {
+                    System.out.println("Не удалось создать привычку.");
+                }
+            } catch (Exception e) {
+                logger.log(Level.SEVERE, "Непредвиденная ошибка: " + e.getMessage(), e);
+                System.out.println("Ошибка");
             }
-        } catch (HabitException e) {
-            logger.log(Level.WARNING, "Ошибка создания привычки: " + e.getMessage(), e);
-            System.out.println(e.getMessage());
-        } catch (BlockedUserException e) {
-            logger.log(Level.WARNING, "Ошибка блокировки пользователя: " + e.getMessage(), e);
-            System.out.println(e.getMessage());
-        } catch (Exception e) {
-            logger.log(Level.SEVERE, "Непредвиденная ошибка: " + e.getMessage(), e);
-            System.out.println("Непредвиденная ошибка создания привычки");
         }
-    }
 
-    public void updateHabit(User user) {
+ public void updateHabit(User user) {
         try {
-            checkUserBlocked(user);
-            List<Habit> habits = habitService.getHabit(user);
-            if (habits == null || habits.isEmpty()) {
+            List<Habit> habits = habitService.getHabitsByUser(user);
+            if (habits.isEmpty()) {
                 System.out.println("У вас нет привычек для обновления.");
                 return;
             }
@@ -86,33 +80,39 @@ public class HabitController {
             }
 
             Habit habit = habits.get(choice);
-            String name = consoleInputReader.read("Введите новое название привычки: ");
-            String description = consoleInputReader.read("Введите новое описание привычки: ");
-            String frequencyStr = consoleInputReader.read("Введите новую частоту (DAILY/WEEKLY): ");
-            Frequency frequency = Frequency.valueOf(frequencyStr.toUpperCase());
+            if (habit.getId() == null) {
+                System.out.println("Привычка не была сохранена в базе данных. Сначала сохраните привычку.");
+                return;
+            }
 
-            boolean success = habitService.updateHabit(habit, name, description, frequency);
-            if (success) {
+            String newName = consoleInputReader.read("Введите новое имя привычки: ");
+            String newDescription = consoleInputReader.read("Введите новое описание привычки: ");
+            String newFrequency = consoleInputReader.read("Введите новую частоту привычки (DAILY, WEEKLY): ");
+            Frequency frequency = Frequency.valueOf(newFrequency.toUpperCase());
+
+            boolean updated = habitService.updateHabit(habit, newName, newDescription, frequency);
+            if (updated) {
                 System.out.println("Привычка успешно обновлена.");
             } else {
-                throw new UpdateException("Ошибка при обновлении привычки.");
+                System.out.println("Не удалось обновить привычку.");
             }
-        } catch (UpdateException e) {
-            logger.log(Level.WARNING, "Ошибка обновления привычки: " + e.getMessage(), e);
+        } catch (InputInvalidException e) {
+            logger.log(Level.WARNING, "Ошибка ввода: " + e.getMessage(), e);
             System.out.println(e.getMessage());
-        } catch (BlockedUserException e) {
-            logger.log(Level.WARNING, "Ошибка блокировки пользователя: " + e.getMessage(), e);
-            System.out.println(e.getMessage());
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Ошибка при обновлении привычки: " + e.getMessage(), e);
+            System.out.println("Ошибка при обновлении привычки.");
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Непредвиденная ошибка: " + e.getMessage(), e);
-            System.out.println("Непредвиденная ошибка обновления привычки");
+            System.out.println("Ошибка");
         }
     }
+
 
     public void deleteHabit(User user) {
         try {
             checkUserBlocked(user);
-            List<Habit> habits = habitService.getHabit(user);
+            List<Habit> habits = habitService.getHabitsByUser(user);
             if (habits == null || habits.isEmpty()) {
                 System.out.println("У вас нет привычек для удаления.");
                 return;
@@ -151,7 +151,7 @@ public class HabitController {
     public void viewHabits(User user) {
         try {
             checkUserBlocked(user);
-            List<Habit> habits = habitService.getHabit(user);
+            List<Habit> habits = habitService.getHabitsByUser(user);
             if (habits == null || habits.isEmpty()) {
                 System.out.println("У вас нет привычек.");
                 return;
@@ -177,7 +177,7 @@ public class HabitController {
     public void markHabitCompleted(User user) {
         try {
             checkUserBlocked(user);
-            List<Habit> habits = habitService.getHabit(user);
+            List<Habit> habits = habitService.getHabitsByUser(user);
             if (habits == null || habits.isEmpty()) {
                 System.out.println("У вас нет привычек для отметки выполнения.");
                 return;
@@ -211,7 +211,7 @@ public class HabitController {
     public void viewHabitCompletions(User user) {
         try {
             checkUserBlocked(user);
-            List<Habit> habits = habitService.getHabit(user);
+            List<Habit> habits = habitService.getHabitsByUser(user);
             if (habits == null || habits.isEmpty()) {
                 System.out.println("У вас нет привычек.");
                 return;
@@ -254,7 +254,7 @@ public class HabitController {
     public void viewHabitStatistics(User user) {
         try {
             checkUserBlocked(user);
-            List<Habit> habits = habitService.getHabit(user);
+            List<Habit> habits = habitService.getHabitsByUser(user);
             if (habits == null || habits.isEmpty()) {
                 System.out.println("У вас нет привычек.");
                 return;
@@ -313,7 +313,7 @@ public class HabitController {
      public void generateProgressReport(User user) {
         try {
             checkUserBlocked(user);
-            List<Habit> habits = habitService.getHabit(user);
+            List<Habit> habits = habitService.getHabitsByUser(user);
             if (habits == null || habits.isEmpty()) {
                 System.out.println("У вас нет привычек.");
                 return;
@@ -364,7 +364,7 @@ public class HabitController {
     public void sendNotification(User user) {
         try {
             checkUserBlocked(user);
-            List<Habit> habits = habitService.getHabit(user);
+            List<Habit> habits = habitService.getHabitsByUser(user);
             if (habits == null || habits.isEmpty()) {
                 System.out.println("У вас нет привычек.");
                 return;

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd">
+
+    <changeSet id="002" author="naudzyk">
+        <sql>
+            CREATE SEQUENCE habit_schema.user_id_seq START 1 INCREMENT 1;
+            CREATE SEQUENCE habit_schema.habit_id_seq START 1 INCREMENT 1;
+            CREATE SEQUENCE habit_schema.notification_id_seq START 1 INCREMENT 1;
+            CREATE SEQUENCE habit_schema.habit_completion_id_seq START 1 INCREMENT 1;
+            CREATE SEQUENCE utility_schema.utility_id_seq START 1 INCREMENT 1;
+        </sql>
+    </changeSet>
+</databaseChangeLog>

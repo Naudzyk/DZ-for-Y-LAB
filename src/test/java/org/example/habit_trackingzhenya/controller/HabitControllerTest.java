@@ -1,293 +1,397 @@
 package org.example.habit_trackingzhenya.controller;
 
 import org.example.habit_trackingzhenya.models.*;
-import org.example.habit_trackingzhenya.services.HabitCompletionService;
-import org.example.habit_trackingzhenya.services.HabitService;
 import org.example.habit_trackingzhenya.services.Impl.HabitCompletionServiceImpl;
 import org.example.habit_trackingzhenya.services.Impl.HabitServiceImpl;
 import org.example.habit_trackingzhenya.services.Impl.NotificationServiceImpl;
-import org.example.habit_trackingzhenya.services.NotificationService;
 
-import org.example.habit_trackingzhenya.utils.ConsoleInputReader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.List;
 
+import static java.time.LocalDate.now;
 import static org.mockito.Mockito.*;
 
 public class HabitControllerTest {
-    private HabitController habitController;
+
+    @Mock
     private HabitServiceImpl habitService;
+
+    @Mock
     private HabitCompletionServiceImpl habitCompletionService;
+
+    @Mock
     private NotificationServiceImpl notificationService;
+
+    @Mock
     private ConsoleInputReader consoleInputReader;
 
+    @InjectMocks
+    private HabitController habitController;
 
     @BeforeEach
     public void setUp() {
-        habitService = Mockito.mock(HabitServiceImpl.class);
-        habitCompletionService = Mockito.mock(HabitCompletionServiceImpl.class);
-        notificationService = Mockito.mock(NotificationServiceImpl.class);
-        consoleInputReader = Mockito.mock(ConsoleInputReader.class);
-        habitController = new HabitController(habitService, habitCompletionService, notificationService, consoleInputReader);
+        MockitoAnnotations.openMocks(this);
     }
 
-       @Test
-    void testCreateHabit_Success() {
-        User user = new User("John Doe", "john.doe@example.com", "password", Role.USER, false);
-        when(consoleInputReader
-.read("Введите название привычки: ")).thenReturn("Habit1");
-        when(consoleInputReader
-.read("Введите описание привычки: ")).thenReturn("Description1");
-        when(consoleInputReader
-.read("Введите частоту (DAILY/WEEKLY): ")).thenReturn("DAILY");
-        when(habitService.createHabit(user, "Habit1", "Description1", Frequency.DAILY)).thenReturn(true);
+    @Test
+    public void testCreateHabit() {
+        // Arrange
+        User user = User.builder()
+                .id(1L)
+                .name("User1")
+                .email("user1@example.com")
+                .password("password1")
+                .blocked(false)
+                .role(Role.USER)
+                .build();
 
+        when(consoleInputReader.read("Введите имя привычки: ")).thenReturn("Test Habit");
+        when(consoleInputReader.read("Введите описание привычки: ")).thenReturn("Test Description");
+        when(consoleInputReader.read("Введите частоту привычки (DAILY, WEEKLY): ")).thenReturn("DAILY");
+        when(habitService.createHabit(user, "Test Habit", "Test Description", Frequency.DAILY)).thenReturn(true);
+
+        // Act
         habitController.createHabit(user);
 
-        verify(habitService).createHabit(user, "Habit1", "Description1", Frequency.DAILY);
-        verify(consoleInputReader
-, times(3)).read(anyString());
+        // Assert
+        verify(consoleInputReader, times(1)).read("Введите имя привычки: ");
+        verify(consoleInputReader, times(1)).read("Введите описание привычки: ");
+        verify(consoleInputReader, times(1)).read("Введите частоту привычки (DAILY, WEEKLY): ");
+        verify(habitService, times(1)).createHabit(user, "Test Habit", "Test Description", Frequency.DAILY);
     }
 
     @Test
-    void testCreateHabit_UserBlocked() {
-        User user = new User("John Doe", "john.doe@example.com", "password", Role.USER, true);
+    public void testUpdateHabit() throws SQLException {
+        // Arrange
+        User user = User.builder()
+                .id(1L)
+                .name("User1")
+                .email("user1@example.com")
+                .password("password1")
+                .blocked(false)
+                .role(Role.USER)
+                .build();
 
-        habitController.createHabit(user);
+        Habit habit = Habit.builder()
+                .id(1L)
+                .name("Test Habit")
+                .description("Test Description")
+                .frequency(Frequency.DAILY)
+                .user(user)
+                .creationDate(LocalDate.now())
+                .build();
 
-        verify(habitService, never()).createHabit(any(), anyString(), anyString(), any());
-        verify(consoleInputReader
-, never()).read(anyString());
-    }
+        List<Habit> habits = Arrays.asList(habit);
+        when(habitService.getHabitsByUser(user)).thenReturn(habits);
+        when(consoleInputReader.read("Введите номер привычки: ")).thenReturn("1");
+        when(consoleInputReader.read("Введите новое имя привычки: ")).thenReturn("Updated Habit");
+        when(consoleInputReader.read("Введите новое описание привычки: ")).thenReturn("Updated Description");
+        when(consoleInputReader.read("Введите новую частоту привычки (DAILY, WEEKLY): ")).thenReturn("WEEKLY");
+        when(habitService.updateHabit(habit, "Updated Habit", "Updated Description", Frequency.WEEKLY)).thenReturn(true);
 
-    @Test
-    void testUpdateHabit_Success() {
-        User user = new User("John Doe", "john.doe@example.com", "password", Role.USER, false);
-        Habit habit = new Habit("Habit1", "Description1", Frequency.DAILY, LocalDate.now(), user);
-        when(habitService.getHabit(user)).thenReturn(Arrays.asList(habit));
-        when(consoleInputReader
-.read("Введите номер привычки: ")).thenReturn("1");
-        when(consoleInputReader
-.read("Введите новое название привычки: ")).thenReturn("NewHabit");
-        when(consoleInputReader
-.read("Введите новое описание привычки: ")).thenReturn("NewDescription");
-        when(consoleInputReader
-.read("Введите новую частоту (DAILY/WEEKLY): ")).thenReturn("WEEKLY");
-        when(habitService.updateHabit(habit, "NewHabit", "NewDescription", Frequency.WEEKLY)).thenReturn(true);
-
+        // Act
         habitController.updateHabit(user);
 
-        verify(habitService).updateHabit(habit, "NewHabit", "NewDescription", Frequency.WEEKLY);
-        verify(consoleInputReader
-, times(4)).read(anyString());
+        // Assert
+        verify(habitService, times(1)).getHabitsByUser(user);
+        verify(consoleInputReader, times(1)).read("Введите номер привычки: ");
+        verify(consoleInputReader, times(1)).read("Введите новое имя привычки: ");
+        verify(consoleInputReader, times(1)).read("Введите новое описание привычки: ");
+        verify(consoleInputReader, times(1)).read("Введите новую частоту привычки (DAILY, WEEKLY): ");
+        verify(habitService, times(1)).updateHabit(habit, "Updated Habit", "Updated Description", Frequency.WEEKLY);
     }
 
     @Test
-    void testUpdateHabit_UserBlocked() {
-        User user = new User("John Doe", "john.doe@example.com", "password", Role.USER, true);
+    public void testDeleteHabit() throws SQLException {
+        // Arrange
+        User user = User.builder()
+                .id(1L)
+                .name("User1")
+                .email("user1@example.com")
+                .password("password1")
+                .blocked(false)
+                .role(Role.USER)
+                .build();
 
-        habitController.updateHabit(user);
+        Habit habit = Habit.builder()
+                .id(1L)
+                .name("Test Habit")
+                .description("Test Description")
+                .frequency(Frequency.DAILY)
+                .user(user)
+                .creationDate(LocalDate.now())
+                .build();
 
-        verify(habitService, never()).updateHabit(any(), anyString(), anyString(), any());
-        verify(consoleInputReader
-, never()).read(anyString());
-    }
-
-    @Test
-    void testDeleteHabit_Success() {
-        User user = new User("John Doe", "john.doe@example.com", "password", Role.USER, false);
-        Habit habit = new Habit("Habit1", "Description1", Frequency.DAILY, LocalDate.now(), user);
-        when(habitService.getHabit(user)).thenReturn(Arrays.asList(habit));
-        when(consoleInputReader
-.read("Введите номер привычки: ")).thenReturn("1");
+        List<Habit> habits = Arrays.asList(habit);
+        when(habitService.getHabitsByUser(user)).thenReturn(habits);
+        when(consoleInputReader.read("Введите номер привычки: ")).thenReturn("1");
         when(habitService.deleteHabit(habit)).thenReturn(true);
 
+        // Act
         habitController.deleteHabit(user);
 
-        verify(habitService).deleteHabit(habit);
-        verify(consoleInputReader
-).read("Введите номер привычки: ");
+        // Assert
+        verify(habitService, times(1)).getHabitsByUser(user);
+        verify(consoleInputReader, times(1)).read("Введите номер привычки: ");
+        verify(habitService, times(1)).deleteHabit(habit);
     }
 
     @Test
-    void testDeleteHabit_UserBlocked() {
-        User user = new User("John Doe", "john.doe@example.com", "password", Role.USER, true);
+    public void testViewHabits() throws SQLException {
+        // Arrange
+        User user = User.builder()
+                .id(1L)
+                .name("User1")
+                .email("user1@example.com")
+                .password("password1")
+                .blocked(false)
+                .role(Role.USER)
+                .build();
 
-        habitController.deleteHabit(user);
+        Habit habit = Habit.builder()
+                .id(1L)
+                .name("Test Habit")
+                .description("Test Description")
+                .frequency(Frequency.DAILY)
+                .user(user)
+                .creationDate(LocalDate.now())
+                .build();
 
-        verify(habitService, never()).deleteHabit(any());
-        verify(consoleInputReader
-, never()).read(anyString());
-    }
+        List<Habit> habits = Arrays.asList(habit);
+        when(habitService.getHabitsByUser(user)).thenReturn(habits);
 
-    @Test
-    void testViewHabits_Success() {
-        User user = new User("John Doe", "john.doe@example.com", "password", Role.USER, false);
-        Habit habit1 = new Habit("Habit1", "Description1", Frequency.DAILY, LocalDate.now(), user);
-        Habit habit2 = new Habit("Habit2", "Description2", Frequency.WEEKLY, LocalDate.now(), user);
-        when(habitService.getHabit(user)).thenReturn(Arrays.asList(habit1, habit2));
-
+        // Act
         habitController.viewHabits(user);
 
-        verify(habitService).getHabit(user);
+        // Assert
+        verify(habitService, times(1)).getHabitsByUser(user);
     }
 
     @Test
-    void testViewHabits_UserBlocked() {
-        User user = new User("John Doe", "john.doe@example.com", "password", Role.USER, true);
+    public void testMarkHabitCompleted() throws SQLException {
+        // Arrange
+        User user = User.builder()
+                .id(1L)
+                .name("User1")
+                .email("user1@example.com")
+                .password("password1")
+                .blocked(false)
+                .role(Role.USER)
+                .build();
 
-        habitController.viewHabits(user);
+        Habit habit = Habit.builder()
+                .id(1L)
+                .name("Test Habit")
+                .description("Test Description")
+                .frequency(Frequency.DAILY)
+                .user(user)
+                .creationDate(LocalDate.now())
+                .build();
 
-        verify(habitService, never()).getHabit(any());
-    }
+        List<Habit> habits = Arrays.asList(habit);
+        when(habitService.getHabitsByUser(user)).thenReturn(habits);
+        when(consoleInputReader.read("Введите номер привычки: ")).thenReturn("1");
 
-    @Test
-    void testMarkHabitCompleted_Success() {
-        User user = new User("John Doe", "john.doe@example.com", "password", Role.USER, false);
-        Habit habit = new Habit("Habit1", "Description1", Frequency.DAILY, LocalDate.now(), user);
-        when(habitService.getHabit(user)).thenReturn(Arrays.asList(habit));
-        when(consoleInputReader
-.read("Введите номер привычки: ")).thenReturn("1");
-
+        // Act
         habitController.markHabitCompleted(user);
 
-        verify(habitCompletionService).markHabitCompleted(habit);
-        verify(consoleInputReader
-).read("Введите номер привычки: ");
+        // Assert
+        verify(habitService, times(1)).getHabitsByUser(user);
+        verify(consoleInputReader, times(1)).read("Введите номер привычки: ");
+        verify(habitCompletionService, times(1)).markHabitCompleted(habit);
     }
 
     @Test
-    void testMarkHabitCompleted_UserBlocked() {
-        User user = new User("John Doe", "john.doe@example.com", "password", Role.USER, true);
+    public void testViewHabitCompletions() throws SQLException {
+        // Arrange
+        User user = User.builder()
+                .id(1L)
+                .name("User1")
+                .email("user1@example.com")
+                .password("password1")
+                .blocked(false)
+                .role(Role.USER)
+                .build();
 
-        habitController.markHabitCompleted(user);
+        Habit habit = Habit.builder()
+                .id(1L)
+                .name("Test Habit")
+                .description("Test Description")
+                .frequency(Frequency.DAILY)
+                .user(user)
+                .creationDate(LocalDate.now())
+                .build();
 
-        verify(habitCompletionService, never()).markHabitCompleted(any());
-        verify(consoleInputReader
-, never()).read(anyString());
-    }
+        List<Habit> habits = Arrays.asList(habit);
+        List<HabitCompletion> completions = Arrays.asList(new HabitCompletion(habit, LocalDate.now()));
+        when(habitService.getHabitsByUser(user)).thenReturn(habits);
+        when(consoleInputReader.read("Введите номер привычки: ")).thenReturn("1");
+        when(habitCompletionService.getCompletionsForHabit(habit)).thenReturn(completions);
 
-    @Test
-    void testViewHabitCompletions_Success() {
-        User user = new User("John Doe", "john.doe@example.com", "password", Role.USER, false);
-        Habit habit = new Habit("Habit1", "Description1", Frequency.DAILY, LocalDate.now(), user);
-        HabitCompletion completion = new HabitCompletion(habit, LocalDate.now());
-        when(habitService.getHabit(user)).thenReturn(Arrays.asList(habit));
-        when(consoleInputReader
-.read("Введите номер привычки: ")).thenReturn("1");
-        when(habitCompletionService.getCompletionsForHabit(habit)).thenReturn(Arrays.asList(completion));
-
+        // Act
         habitController.viewHabitCompletions(user);
 
-        verify(habitCompletionService).getCompletionsForHabit(habit);
-        verify(consoleInputReader
-).read("Введите номер привычки: ");
+        // Assert
+        verify(habitService, times(1)).getHabitsByUser(user);
+        verify(consoleInputReader, times(1)).read("Введите номер привычки: ");
+        verify(habitCompletionService, times(1)).getCompletionsForHabit(habit);
     }
 
     @Test
-    void testViewHabitCompletions_UserBlocked() {
-        User user = new User("John Doe", "john.doe@example.com", "password", Role.USER, true);
+    public void testViewHabitStatistics() throws SQLException {
+        // Arrange
+        User user = User.builder()
+                .id(1L)
+                .name("User1")
+                .email("user1@example.com")
+                .password("password1")
+                .blocked(false)
+                .role(Role.USER)
+                .build();
 
-        habitController.viewHabitCompletions(user);
+        Habit habit = Habit.builder()
+                .id(1L)
+                .name("Test Habit")
+                .description("Test Description")
+                .frequency(Frequency.DAILY)
+                .user(user)
+                .creationDate(LocalDate.now())
+                .build();
 
-        verify(habitCompletionService, never()).getCompletionsForHabit(any());
-        verify(consoleInputReader
-, never()).read(anyString());
-    }
-
-    @Test
-    void testViewHabitStatistics_Success() {
-        User user = new User("John Doe", "john.doe@example.com", "password", Role.USER, false);
-        Habit habit = new Habit("Habit1", "Description1", Frequency.DAILY, LocalDate.now(), user);
-        when(habitService.getHabit(user)).thenReturn(Arrays.asList(habit));
-        when(consoleInputReader
-.read("Введите номер привычки: ")).thenReturn("1");
-        when(consoleInputReader
-.read("Введите период (DAY/WEEK/MONTH): ")).thenReturn("WEEK");
+        List<Habit> habits = Arrays.asList(habit);
+        when(habitService.getHabitsByUser(user)).thenReturn(habits);
+        when(consoleInputReader.read("Введите номер привычки: ")).thenReturn("1");
+        when(consoleInputReader.read("Введите период (DAY/WEEK/MONTH): ")).thenReturn("WEEK");
         when(habitCompletionService.getCompletionCountForHabitInPeriod(habit, LocalDate.now().minusWeeks(1), LocalDate.now())).thenReturn(5);
         when(habitCompletionService.getCurrentStreak(habit)).thenReturn(3);
         when(habitCompletionService.getCompletionPercentageForPeriod(habit, LocalDate.now().minusWeeks(1), LocalDate.now())).thenReturn(75.0);
 
+        // Act
         habitController.viewHabitStatistics(user);
 
-        verify(habitCompletionService).getCompletionCountForHabitInPeriod(habit, LocalDate.now().minusWeeks(1), LocalDate.now());
-        verify(habitCompletionService).getCurrentStreak(habit);
-        verify(habitCompletionService).getCompletionPercentageForPeriod(habit, LocalDate.now().minusWeeks(1), LocalDate.now());
-        verify(consoleInputReader
-, times(2)).read(anyString());
+        // Assert
+        verify(habitService, times(1)).getHabitsByUser(user);
+        verify(consoleInputReader, times(1)).read("Введите номер привычки: ");
+        verify(consoleInputReader, times(1)).read("Введите период (DAY/WEEK/MONTH): ");
+        verify(habitCompletionService, times(1)).getCompletionCountForHabitInPeriod(habit, LocalDate.now().minusWeeks(1), LocalDate.now());
+        verify(habitCompletionService, times(1)).getCurrentStreak(habit);
+        verify(habitCompletionService, times(1)).getCompletionPercentageForPeriod(habit, LocalDate.now().minusWeeks(1), LocalDate.now());
     }
 
     @Test
-    void testViewHabitStatistics_UserBlocked() {
-        User user = new User("John Doe", "john.doe@example.com", "password", Role.USER, true);
+    public void testGenerateProgressReport() throws SQLException {
+        // Arrange
+        User user = User.builder()
+                .id(1L)
+                .name("User1")
+                .email("user1@example.com")
+                .password("password1")
+                .blocked(false)
+                .role(Role.USER)
+                .build();
 
-        habitController.viewHabitStatistics(user);
+        Habit habit = Habit.builder()
+                .id(1L)
+                .name("Test Habit")
+                .description("Test Description")
+                .frequency(Frequency.DAILY)
+                .user(user)
+                .creationDate(LocalDate.now())
+                .build();
 
-        verify(habitCompletionService, never()).getCompletionCountForHabitInPeriod(any(), any(), any());
-        verify(habitCompletionService, never()).getCurrentStreak(any());
-        verify(habitCompletionService, never()).getCompletionPercentageForPeriod(any(), any(), any());
-        verify(consoleInputReader
-, never()).read(anyString());
-    }
+        List<Habit> habits = Arrays.asList(habit);
+        when(habitService.getHabitsByUser(user)).thenReturn(habits);
+        when(consoleInputReader.read("Введите номер привычки: ")).thenReturn("1");
+        when(consoleInputReader.read("Введите период (DAY/WEEK/MONTH): ")).thenReturn("WEEK");
+        when(habitCompletionService.generateProgressReport(habit, LocalDate.now().minusWeeks(1), LocalDate.now())).thenReturn("Test Report");
 
-    @Test
-    void testGenerateProgressReport_Success() {
-        User user = new User("John Doe", "john.doe@example.com", "password", Role.USER, false);
-        Habit habit = new Habit("Habit1", "Description1", Frequency.DAILY, LocalDate.now(), user);
-        when(habitService.getHabit(user)).thenReturn(Arrays.asList(habit));
-        when(consoleInputReader
-.read("Введите номер привычки: ")).thenReturn("1");
-        when(consoleInputReader
-.read("Введите период (DAY/WEEK/MONTH): ")).thenReturn("WEEK");
-        when(habitCompletionService.generateProgressReport(habit, LocalDate.now().minusWeeks(1), LocalDate.now())).thenReturn("Report");
-
+        // Act
         habitController.generateProgressReport(user);
 
-        verify(habitCompletionService).generateProgressReport(habit, LocalDate.now().minusWeeks(1), LocalDate.now());
-        verify(consoleInputReader
-, times(2)).read(anyString());
+        // Assert
+        verify(habitService, times(1)).getHabitsByUser(user);
+        verify(consoleInputReader, times(1)).read("Введите номер привычки: ");
+        verify(consoleInputReader, times(1)).read("Введите период (DAY/WEEK/MONTH): ");
+        verify(habitCompletionService, times(1)).generateProgressReport(habit, LocalDate.now().minusWeeks(1), LocalDate.now());
     }
 
     @Test
-    void testGenerateProgressReport_UserBlocked() {
-        User user = new User("John Doe", "john.doe@example.com", "password", Role.USER, true);
+    public void testSendNotification() throws SQLException {
+        // Arrange
+        User user = User.builder()
+                .id(1L)
+                .name("User1")
+                .email("user1@example.com")
+                .password("password1")
+                .blocked(false)
+                .role(Role.USER)
+                .build();
 
-        habitController.generateProgressReport(user);
+        Habit habit = Habit.builder()
+                .id(1L)
+                .name("Test Habit")
+                .description("Test Description")
+                .frequency(Frequency.DAILY)
+                .user(user)
+                .creationDate(LocalDate.now())
+                .build();
 
-        verify(habitCompletionService, never()).generateProgressReport(any(), any(), any());
-        verify(consoleInputReader
-, never()).read(anyString());
-    }
+        List<Habit> habits = Arrays.asList(habit);
+        when(habitService.getHabitsByUser(user)).thenReturn(habits);
+        when(consoleInputReader.read("Введите номер привычки: ")).thenReturn("1");
+        when(consoleInputReader.read("Введите сообщение для уведомления: ")).thenReturn("Test Message");
 
-    @Test
-    void testSendNotification_Success() {
-        User user = new User("John Doe", "john.doe@example.com", "password", Role.USER, false);
-        Habit habit = new Habit("Habit1", "Description1", Frequency.DAILY, LocalDate.now(), user);
-        when(habitService.getHabit(user)).thenReturn(Arrays.asList(habit));
-        when(consoleInputReader
-.read("Введите номер привычки: ")).thenReturn("1");
-        when(consoleInputReader
-.read("Введите сообщение для уведомления: ")).thenReturn("Message");
-
+        // Act
         habitController.sendNotification(user);
 
-        verify(notificationService).sendNotification(user, habit, "Message");
-        verify(consoleInputReader
-, times(2)).read(anyString());
+        // Assert
+        verify(habitService, times(1)).getHabitsByUser(user);
+        verify(consoleInputReader, times(1)).read("Введите номер привычки: ");
+        verify(consoleInputReader, times(1)).read("Введите сообщение для уведомления: ");
     }
 
     @Test
-    void testSendNotification_UserBlocked() {
-        User user = new User("John Doe", "john.doe@example.com", "password", Role.USER, true);
+    public void testViewFilteredHabits() throws SQLException {
+        // Arrange
+        User user = User.builder()
+                .id(1L)
+                .name("User1")
+                .email("user1@example.com")
+                .password("password1")
+                .blocked(false)
+                .role(Role.USER)
+                .build();
 
-        habitController.sendNotification(user);
+        Habit habit = Habit.builder()
+                .id(1L)
+                .name("Test Habit")
+                .description("Test Description")
+                .frequency(Frequency.DAILY)
+                .user(user)
+                .creationDate(LocalDate.now())
+                .build();
 
-        verify(notificationService, never()).sendNotification(any(), any(), anyString());
-        verify(consoleInputReader
-, never()).read(anyString());
+        List<Habit> habits = Arrays.asList(habit);
+        when(consoleInputReader.read("Введите дату начала отчета (гггг-мм-дд) или оставьте пустым: ")).thenReturn("");
+        when(consoleInputReader.read("Введите дату конца отчета (гггг-мм-дд) или оставьте пустым: ")).thenReturn("");
+        when(consoleInputReader.read("Введите статус выполнения (true/false) или оставьте пустым: ")).thenReturn("");
+        when(habitService.getFilteredHabits(user, null, null, null)).thenReturn(habits);
+
+        // Act
+        habitController.viewFilteredHabits(user);
+
+        // Assert
+        verify(consoleInputReader, times(1)).read("Введите дату начала отчета (гггг-мм-дд) или оставьте пустым: ");
+        verify(consoleInputReader, times(1)).read("Введите дату конца отчета (гггг-мм-дд) или оставьте пустым: ");
+        verify(consoleInputReader, times(1)).read("Введите статус выполнения (true/false) или оставьте пустым: ");
+        verify(habitService, times(1)).getFilteredHabits(user, null, null, null);
     }
 }

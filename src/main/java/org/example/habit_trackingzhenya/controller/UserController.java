@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.example.habit_trackingzhenya.exception.*;
 import org.example.habit_trackingzhenya.models.Role;
 import org.example.habit_trackingzhenya.models.User;
-import org.example.habit_trackingzhenya.services.Impl.UserServiceImpl;
 import org.example.habit_trackingzhenya.services.UserService;
 import org.example.habit_trackingzhenya.utils.ConsoleInputReader;
 
@@ -13,15 +12,9 @@ import java.util.logging.Logger;
 
 @RequiredArgsConstructor
 public class UserController {
-    private UserService userService;
-    private ConsoleInputReader consoleInputReader;
+    private final UserService userService;
+    private final ConsoleInputReader consoleInputReader;
     private final Logger logger = Logger.getLogger(this.getClass().getName());
-
-    public UserController(UserServiceImpl userService,ConsoleInputReader consoleinputReader) {
-        this.userService = userService;
-        this.consoleInputReader = consoleinputReader;
-    }
-
 
     public void registerUser() {
         try {
@@ -31,7 +24,13 @@ public class UserController {
             String roleStr = consoleInputReader.read("Введите роль (USER/ADMIN): ");
             Role role = Role.valueOf(roleStr.toUpperCase());
 
-            User user = new User(name, email, password, role);
+            User user = User.builder()
+                    .name(name)
+                    .email(email)
+                    .password(password)
+                    .role(role)
+                    .build();
+
             boolean success = userService.addUser(user);
             if (success) {
                 System.out.println("Регистрация прошла успешно.");

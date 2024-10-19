@@ -1,14 +1,17 @@
 package org.example.habit_trackingzhenya.models;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class Notification {
+    private Long id;
     private User user;
     private Habit habit;
     private String message;
@@ -21,8 +24,9 @@ public class Notification {
         this.sendTime = LocalDateTime.now();
     }
 
-    public Notification(User user, String message) {
+    public Notification(User user, Habit habit, String message, LocalDateTime now) {
         this.user = user;
         this.message = message;
     }
+
 }

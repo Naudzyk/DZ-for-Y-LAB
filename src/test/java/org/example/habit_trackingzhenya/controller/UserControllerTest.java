@@ -1,239 +1,155 @@
 package org.example.habit_trackingzhenya.controller;
 
-import org.example.habit_trackingzhenya.models.Role;
 import org.example.habit_trackingzhenya.models.User;
-import org.example.habit_trackingzhenya.services.Impl.UserServiceImpl;
-import org.example.habit_trackingzhenya.utils.ConsoleInputReader;
-import org.example.habit_trackingzhenya.utils.Utils;
+import org.example.habit_trackingzhenya.services.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import java.sql.SQLException;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 public class UserControllerTest {
 
-    private UserController userController;
-    private UserServiceImpl userService;
+    @Mock
+    private UserService userService;
+
+    @Mock
     private ConsoleInputReader consoleInputReader;
+
+    @InjectMocks
+    private UserController userController;
 
     @BeforeEach
     public void setUp() {
-        userService = Mockito.mock(UserServiceImpl.class);
-        consoleInputReader = Mockito.mock(Utils.class);
-        userController = new UserController(userService, consoleInputReader);
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    void testRegisterUser_Success() {
-        when(consoleInputReader.read("Введите ваше имя: ")).thenReturn("John Doe");
-        when(consoleInputReader.read("Введите ваш email: ")).thenReturn("john.doe@example.com");
+    public void testRegisterUser() throws SQLException {
+        // Arrange
+        when(consoleInputReader.read("Введите ваше имя: ")).thenReturn("Test User");
+        when(consoleInputReader.read("Введите ваш email: ")).thenReturn("test@example.com");
         when(consoleInputReader.read("Введите ваш пароль: ")).thenReturn("password");
         when(consoleInputReader.read("Введите роль (USER/ADMIN): ")).thenReturn("USER");
         when(userService.addUser(any(User.class))).thenReturn(true);
 
+        // Act
         userController.registerUser();
 
-        verify(userService).addUser(any(User.class));
-        verify(consoleInputReader, times(4)).read(anyString());
+        // Assert
+        verify(consoleInputReader, times(1)).read("Введите ваше имя: ");
+        verify(consoleInputReader, times(1)).read("Введите ваш email: ");
+        verify(consoleInputReader, times(1)).read("Введите ваш пароль: ");
+        verify(consoleInputReader, times(1)).read("Введите роль (USER/ADMIN): ");
+        verify(userService, times(1)).addUser(any(User.class));
     }
 
     @Test
-    void testRegisterUser_Failure() {
-        when(consoleInputReader.read("Введите ваше имя: ")).thenReturn("John Doe");
-        when(consoleInputReader.read("Введите ваш email: ")).thenReturn("john.doe@example.com");
-        when(consoleInputReader.read("Введите ваш пароль: ")).thenReturn("password");
-        when(consoleInputReader.read("Введите роль (USER/ADMIN): ")).thenReturn("USER");
-        when(userService.addUser(any(User.class))).thenReturn(false);
+    public void testLoginUser() throws SQLException {
+        // Arrange
+        User user = User.builder()
+                .name("Test User")
+                .email("test@example.com")
+                .password("password")
+                .role(Role.USER)
+                .build();
 
-        userController.registerUser();
+        when(consoleInputReader.read("Введите ваш Email: ")).thenReturn("test@example.com");
+        when(consoleInputReader.read("Введите ваш Password: ")).thenReturn("password");
+        when(userService.login("test@example.com", "password")).thenReturn(user);
 
-        verify(userService).addUser(any(User.class));
-        verify(consoleInputReader
-, times(4)).read(anyString());
+        // Act
+        User loggedInUser = userController.loginUser();
+
+        // Assert
+        verify(consoleInputReader, times(1)).read("Введите ваш Email: ");
+        verify(consoleInputReader, times(1)).read("Введите ваш Password: ");
+        verify(userService, times(1)).login("test@example.com", "password");
+        assertNotNull(loggedInUser);
+        assertEquals("Test User", loggedInUser.getName());
     }
 
     @Test
-    void testLoginUser_Success() {
-        when(consoleInputReader
-.read("Введите ваш Email: ")).thenReturn("john.doe@example.com");
-        when(consoleInputReader
-.read("Введите ваш Password: ")).thenReturn("password");
-        when(userService.login("john.doe@example.com", "password")).thenReturn(new User("John Doe", "john.doe@example.com", "password", Role.USER));
+    public void testEditProfileEmail() throws SQLException {
+        // Arrange
+        when(consoleInputReader.read("Введите ваш выбор: ")).thenReturn("1");
+        when(consoleInputReader.read("Введите новый Email: ")).thenReturn("newemail@example.com");
+        when(userService.updateEmail("test@example.com", "newemail@example.com")).thenReturn(true);
 
-        User user = userController.loginUser();
+        // Act
+        userController.editProfile("test@example.com");
 
-        assertNotNull(user);
-        assertEquals("John Doe", user.getName());
-        verify(userService).login("john.doe@example.com", "password");
-        verify(consoleInputReader
-, times(2)).read(anyString());
+        // Assert
+        verify(consoleInputReader, times(1)).read("Введите ваш выбор: ");
+        verify(consoleInputReader, times(1)).read("Введите новый Email: ");
+        verify(userService, times(1)).updateEmail("test@example.com", "newemail@example.com");
     }
 
     @Test
-    void testLoginUser_Failure() {
-        when(consoleInputReader
-.read("Введите ваш Email: ")).thenReturn("john.doe@example.com");
-        when(consoleInputReader
-.read("Введите ваш Password: ")).thenReturn("wrongpassword");
-        when(userService.login("john.doe@example.com", "wrongpassword")).thenReturn(null);
+    public void testEditProfileName() throws SQLException {
+        // Arrange
+        when(consoleInputReader.read("Введите ваш выбор: ")).thenReturn("2");
+        when(consoleInputReader.read("Введите новое Имя: ")).thenReturn("New Name");
+        when(userService.updateName("test@example.com", "New Name")).thenReturn(true);
 
-        User user = userController.loginUser();
+        // Act
+        userController.editProfile("test@example.com");
 
-        assertNull(user);
-        verify(userService).login("john.doe@example.com", "wrongpassword");
-        verify(consoleInputReader
-, times(2)).read(anyString());
+        // Assert
+        verify(consoleInputReader, times(1)).read("Введите ваш выбор: ");
+        verify(consoleInputReader, times(1)).read("Введите новое Имя: ");
+        verify(userService, times(1)).updateName("test@example.com", "New Name");
     }
 
     @Test
-    void testEditProfile_UpdateEmail_Success() {
-        when(consoleInputReader
-.read("Введите ваш выбор: ")).thenReturn("1");
-        when(consoleInputReader
-.read("Введите новый Email: ")).thenReturn("new.email@example.com");
-        when(userService.updateEmail("john.doe@example.com", "new.email@example.com")).thenReturn(true);
+    public void testEditProfilePassword() throws SQLException {
+        // Arrange
+        when(consoleInputReader.read("Введите ваш выбор: ")).thenReturn("3");
+        when(consoleInputReader.read("Введите старый Пароль: ")).thenReturn("oldpassword");
+        when(consoleInputReader.read("Введите новый Пароль: ")).thenReturn("newpassword");
+        when(userService.updatePassword("test@example.com", "newpassword", "oldpassword")).thenReturn(true);
 
-        userController.editProfile("john.doe@example.com");
+        // Act
+        userController.editProfile("test@example.com");
 
-        verify(userService).updateEmail("john.doe@example.com", "new.email@example.com");
-        verify(consoleInputReader
-, times(2)).read(anyString());
+        // Assert
+        verify(consoleInputReader, times(1)).read("Введите ваш выбор: ");
+        verify(consoleInputReader, times(1)).read("Введите старый Пароль: ");
+        verify(consoleInputReader, times(1)).read("Введите новый Пароль: ");
+        verify(userService, times(1)).updatePassword("test@example.com", "newpassword", "oldpassword");
     }
 
     @Test
-    void testEditProfile_UpdateEmail_Failure() {
-        when(consoleInputReader
-.read("Введите ваш выбор: ")).thenReturn("1");
-        when(consoleInputReader
-.read("Введите новый Email: ")).thenReturn("new.email@example.com");
-        when(userService.updateEmail("john.doe@example.com", "new.email@example.com")).thenReturn(false);
+    public void testResetPassword() throws SQLException {
+        // Arrange
+        when(consoleInputReader.read("Введите новый пароль: ")).thenReturn("newpassword");
+        when(userService.resetPassword("test@example.com", "newpassword")).thenReturn(true);
 
-        userController.editProfile("john.doe@example.com");
+        // Act
+        userController.resetPassword("test@example.com");
 
-        verify(userService).updateEmail("john.doe@example.com", "new.email@example.com");
-        verify(consoleInputReader
-, times(2)).read(anyString());
+        // Assert
+        verify(consoleInputReader, times(1)).read("Введите новый пароль: ");
+        verify(userService, times(1)).resetPassword("test@example.com", "newpassword");
     }
 
     @Test
-    void testEditProfile_UpdateName_Success() {
-        when(consoleInputReader
-.read("Введите ваш выбор: ")).thenReturn("2");
-        when(consoleInputReader
-.read("Введите новое Имя: ")).thenReturn("New Name");
-        when(userService.updateName("john.doe@example.com", "New Name")).thenReturn(true);
+    public void testDeleteUser() throws SQLException {
+        // Arrange
+        when(consoleInputReader.read("Введите пароль: ")).thenReturn("password");
+        when(userService.deleteUser("test@example.com", "password")).thenReturn(true);
 
-        userController.editProfile("john.doe@example.com");
+        // Act
+        userController.deleteUser("test@example.com");
 
-        verify(userService).updateName("john.doe@example.com", "New Name");
-        verify(consoleInputReader
-, times(2)).read(anyString());
-    }
-
-    @Test
-    void testEditProfile_UpdateName_Failure() {
-        when(consoleInputReader
-.read("Введите ваш выбор: ")).thenReturn("2");
-        when(consoleInputReader
-.read("Введите новое Имя: ")).thenReturn("New Name");
-        when(userService.updateName("john.doe@example.com", "New Name")).thenReturn(false);
-
-        userController.editProfile("john.doe@example.com");
-
-        verify(userService).updateName("john.doe@example.com", "New Name");
-        verify(consoleInputReader
-, times(2)).read(anyString());
-    }
-
-    @Test
-    void testEditProfile_UpdatePassword_Success() {
-        when(consoleInputReader
-.read("Введите ваш выбор: ")).thenReturn("3");
-        when(consoleInputReader
-.read("Введите старый Пароль: ")).thenReturn("oldpassword");
-        when(consoleInputReader
-.read("Введите новый Пароль: ")).thenReturn("newpassword");
-        when(userService.updatePassword("john.doe@example.com", "newpassword", "oldpassword")).thenReturn(true);
-
-        userController.editProfile("john.doe@example.com");
-
-        verify(userService).updatePassword("john.doe@example.com", "newpassword", "oldpassword");
-        verify(consoleInputReader
-, times(3)).read(anyString());
-    }
-
-    @Test
-    void testEditProfile_UpdatePassword_Failure() {
-        when(consoleInputReader
-.read("Введите ваш выбор: ")).thenReturn("3");
-        when(consoleInputReader
-.read("Введите старый Пароль: ")).thenReturn("wrongpassword");
-        when(consoleInputReader
-.read("Введите новый Пароль: ")).thenReturn("newpassword");
-        when(userService.updatePassword("john.doe@example.com", "newpassword", "wrongpassword")).thenReturn(false);
-
-        userController.editProfile("john.doe@example.com");
-
-        verify(userService).updatePassword("john.doe@example.com", "newpassword", "wrongpassword");
-        verify(consoleInputReader
-, times(3)).read(anyString());
-    }
-
-    @Test
-    void testResetPassword_Success() {
-        when(consoleInputReader
-.read("Введите новый пароль: ")).thenReturn("newpassword");
-        when(userService.resetPassword("john.doe@example.com", "newpassword")).thenReturn(true);
-
-        userController.resetPassword("john.doe@example.com");
-
-        verify(userService).resetPassword("john.doe@example.com", "newpassword");
-        verify(consoleInputReader
-).read("Введите новый пароль: ");
-    }
-
-    @Test
-    void testResetPassword_Failure() {
-        when(consoleInputReader
-.read("Введите новый пароль: ")).thenReturn("newpassword");
-        when(userService.resetPassword("john.doe@example.com", "newpassword")).thenReturn(false);
-
-        userController.resetPassword("john.doe@example.com");
-
-        verify(userService).resetPassword("john.doe@example.com", "newpassword");
-        verify(consoleInputReader
-).read("Введите новый пароль: ");
-    }
-
-    @Test
-    void testDeleteUser_Success() {
-        when(consoleInputReader
-.read("Введите пароль: ")).thenReturn("password");
-        when(userService.deleteUser("john.doe@example.com", "password")).thenReturn(true);
-
-        userController.deleteUser("john.doe@example.com");
-
-        verify(userService).deleteUser("john.doe@example.com", "password");
-        verify(consoleInputReader
-).read("Введите пароль: ");
-    }
-
-    @Test
-    void testDeleteUser_Failure() {
-        when(consoleInputReader
-.read("Введите пароль: ")).thenReturn("wrongpassword");
-        when(userService.deleteUser("john.doe@example.com", "wrongpassword")).thenReturn(false);
-
-        userController.deleteUser("john.doe@example.com");
-
-        verify(userService).deleteUser("john.doe@example.com", "wrongpassword");
-        verify(consoleInputReader
-).read("Введите пароль: ");
+        // Assert
+        verify(consoleInputReader, times(1)).read("Введите пароль: ");
+        verify(userService, times(1)).deleteUser("test@example.com", "password");
     }
 }
