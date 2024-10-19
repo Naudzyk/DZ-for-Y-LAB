@@ -1,5 +1,7 @@
 # Habit Tracker Application
-[Ссылка на pull request](https://github.com/Naudzyk/DZ-for-Y-LAB/pull/1)
+[Ссылка на pull request Homework 1](https://github.com/Naudzyk/DZ-for-Y-LAB/pull/1)
+
+[Ссылка на pull request Homework 2](https://github.com/Naudzyk/DZ-for-Y-LAB/pull/3)
 ## Описание
 
 Habit Tracker Application — это консольное приложение, которое позволяет пользователям управлять своими привычками. Пользователи могут регистрироваться, авторизовываться, создавать, обновлять, удалять привычки, отмечать их выполнение, просматривать статистику и получать уведомления. Приложение также поддерживает фильтрацию привычек по дате создания и статусу выполнения.
